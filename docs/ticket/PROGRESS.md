@@ -9,7 +9,7 @@
 ## 📊 全体進捗
 
 ```
-進捗: ████████████░░░░░░░░ 67% (8/12 Phase)
+進捗: █████████████░░░░░░░ 75% (9/12 Phase)
 
 Phase 0: ドキュメント作成    🟢 完了
 Phase 1: プロジェクトセットアップ 🟢 完了
@@ -19,7 +19,7 @@ Phase 4: API Routes        🟢 完了
 Phase 5: 共通UI           🟢 完了
 Phase 6: Widgets          🟢 完了
 Phase 7: エクスポート       🟢 完了
-Phase 8: ビルダー          🔴 未着手
+Phase 8: ビルダー          🟢 完了
 Phase 9: ページ実装        🔴 未着手
 Phase 10: DB統合          🔴 未着手
 Phase 11: テスト          🔴 未着手
@@ -49,10 +49,10 @@ Phase 12: デプロイ         🔴 未着手
 - [x] Phase 4: API Routes
 - [x] Phase 5: 共通UIコンポーネント
 
-### Milestone 3: コア機能実装 🔄 67% (2/3)
+### Milestone 3: コア機能実装 ✅ 100% (3/3)
 - [x] Phase 6: Widgetコンポーネント
 - [x] Phase 7: HTML/CSSエクスポート
-- [ ] Phase 8: ビルダーコンポーネント
+- [x] Phase 8: ビルダーコンポーネント
 
 ### Milestone 4: 統合とデプロイ ⬜ 0% (0/4)
 - [ ] Phase 9: ページ実装
@@ -74,15 +74,15 @@ Phase 12: デプロイ         🔴 未着手
 | 5 | 共通UIコンポーネント | 🟢 完了 | 45-60m | 30m | 100% | [📝](phase-05-common-ui.md) |
 | 6 | Widgetコンポーネント | 🟢 完了 | 45-60m | 30m | 100% | [📝](phase-06-widgets.md) |
 | 7 | HTML/CSSエクスポート | 🟢 完了 | 30-45m | 15m | 100% | [📝](phase-07-export-engine.md) |
-| 8 | ビルダーコンポーネント | 🔴 未着手 | 60-90m | - | 0% | [📝](phase-08-builder.md) |
+| 8 | ビルダーコンポーネント | 🟢 完了 | 60-90m | 30m | 100% | [📝](phase-08-builder.md) |
 | 9 | ページ実装 | 🔴 未着手 | 30-45m | - | 0% | [📝](phase-09-pages.md) |
 | 10 | データベース統合 | 🔴 未着手 | 15-30m | - | 0% | [📝](phase-10-db-integration.md) |
 | 11 | UI/UXテスト | 🔴 未着手 | 30-60m | - | 0% | [📝](phase-11-testing.md) |
 | 12 | Vercelデプロイ | 🔴 未着手 | 15-30m | - | 0% | [📝](phase-12-deployment.md) |
 
 **合計見積**: 6.5-9.5時間
-**実績時間**: 2.75時間
-**残り時間**: 2.25-5.25時間
+**実績時間**: 3.05時間
+**残り時間**: 1.95-5.05時間
 
 ---
 
@@ -97,11 +97,12 @@ Phase 12: デプロイ         🔴 未着手
 6. ✅ Phase 5: 共通UIコンポーネント（完了）
 7. ✅ Phase 6: Widgetコンポーネント（完了）
 8. ✅ Phase 7: HTML/CSSエクスポート（完了）
-9. ⬜ Phase 8: ビルダーコンポーネント
+9. ✅ Phase 8: ビルダーコンポーネント（完了）
+10. ⬜ Phase 9: ページ実装
 
 ### 次にやること
-1. Phase 8: ビルダーコンポーネント
-2. Phase 9: ページ実装
+1. Phase 9: ページ実装
+2. Phase 10: データベース統合
 
 ---
 
@@ -118,6 +119,21 @@ Phase 12: デプロイ         🔴 未着手
 ---
 
 ## 📝 最近の更新履歴
+
+### 2025-10-21 21:30
+- ✅ Phase 8完了: ビルダーコンポーネント実装
+  - src/components/builder/Canvas.tsx（119行）: useDroppable、グリッド背景、空状態表示、ドロップハイライト
+  - src/components/builder/WidgetPalette.tsx（161行）: 6種類Widget、useDraggable、視覚的フィードバック
+  - src/components/builder/WidgetWrapper.tsx（257行）: ドラッグ移動、8方向リサイズ、選択状態、削除ボタン、キーボード操作
+  - src/components/builder/PropertiesPanel.tsx（636行）: Widget種類別プロパティUI、リアルタイム更新、8種類の入力コンポーネント
+  - src/components/builder/Toolbar.tsx（254行）: プロジェクト名編集、保存・プレビュー・エクスポートボタン、最終保存時刻表示
+  - src/lib/widget-renderer.tsx（67行）: Widget種類別レンダリング、デフォルトサイズ取得
+  - src/app/globals.css更新: キャンバスグリッド表示スタイル追加
+  - dnd-kitライブラリを使用したドラッグ&ドロップ機能を実装
+  - 8方向リサイズハンドル実装（nw, ne, sw, se, n, s, e, w）
+  - 6種類すべてのWidgetプロパティパネル実装
+  - npm run buildでTypeScriptエラー0件
+  - **Milestone 3完了**: コア機能実装（Phase 6-8）100%達成
 
 ### 2025-10-21 20:45
 - ✅ Phase 7完了: HTML/CSSエクスポートエンジン実装

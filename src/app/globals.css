@@ -43,4 +43,23 @@ body {
     white-space: nowrap;
     border-width: 0;
   }
+
+  /* キャンバスグリッド表示 */
+  .canvas-grid {
+    background-color: #ffffff;
+  }
+
+  .canvas-grid::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image:
+      linear-gradient(to right, #e5e7eb 1px, transparent 1px),
+      linear-gradient(to bottom, #e5e7eb 1px, transparent 1px);
+    background-size: 20px 20px;
+    pointer-events: none;
+  }
 }
