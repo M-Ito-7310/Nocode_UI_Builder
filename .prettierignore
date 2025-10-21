@@ -1,0 +1,18 @@
+# 依存関係
+node_modules/
+
+# ビルド出力
+.next/
+out/
+dist/
+build/
+
+# 環境変数
+.env*
+
+# ログ
+*.log
+
+# その他
+.DS_Store
+coverage/
