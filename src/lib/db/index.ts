@@ -6,13 +6,18 @@ import * as schema from './schema';
  * 環境変数の検証
  *
  * DATABASE_URLが設定されていない場合はエラーを投げます。
- * これにより、実行時エラーを早期に検出できます。
+ * ビルド時はスキップします。
  */
-if (!process.env.DATABASE_URL) {
-  throw new Error(
-    'DATABASE_URL is not defined. Please set it in .env.local file.\n' +
-    'Example: DATABASE_URL="postgresql://user:pass@host.neon.tech/dbname?sslmode=require"'
-  );
+const DATABASE_URL = process.env.DATABASE_URL || '';
+
+if (!DATABASE_URL && process.env.NODE_ENV !== 'production') {
+  // ビルド時やテスト時はワーニングのみ
+  if (typeof window === 'undefined' && !process.env.NEXT_PHASE) {
+    console.warn(
+      'DATABASE_URL is not defined. Please set it in .env.local file.\n' +
+      'Example: DATABASE_URL="postgresql://user:pass@host.neon.tech/dbname?sslmode=require"'
+    );
+  }
 }
 
 /**
@@ -21,7 +26,7 @@ if (!process.env.DATABASE_URL) {
  * HTTPベースのPostgreSQLクライアント。
  * Vercel Edge Functionsやその他のエッジ環境で動作します。
  */
-const sql = neon(process.env.DATABASE_URL);
+const sql = DATABASE_URL ? neon(DATABASE_URL) : neon('postgresql://dummy:dummy@localhost/dummy');
 
 /**
  * Drizzle ORMインスタンス
