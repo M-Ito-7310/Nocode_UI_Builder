@@ -19,7 +19,7 @@ async function testDrizzle() {
     console.log(`✅ ${allProjects.length}件のプロジェクトが見つかりました`);
     if (allProjects.length > 0) {
       console.log('   最新のプロジェクト:');
-      console.log(`   - ${allProjects[0].name} (${allProjects[0].id})`);
+      console.log(`   - ${allProjects[0]?.name} (${allProjects[0]?.id})`);
     }
     console.log('');
 
@@ -55,10 +55,10 @@ async function testDrizzle() {
       },
     }).returning();
     console.log('✅ プロジェクト作成成功!');
-    console.log(`   ID: ${newProject[0].id}`);
-    console.log(`   名前: ${newProject[0].name}`);
-    console.log(`   説明: ${newProject[0].description}`);
-    console.log(`   Widget数: ${newProject[0].canvasData.components.length}`);
+    console.log(`   ID: ${newProject[0]?.id}`);
+    console.log(`   名前: ${newProject[0]?.name}`);
+    console.log(`   説明: ${newProject[0]?.description}`);
+    console.log(`   Widget数: ${(newProject[0]?.canvasData as any)?.components?.length}`);
     console.log('');
 
     // 3. 作成したプロジェクトを取得
@@ -66,10 +66,10 @@ async function testDrizzle() {
     const fetchedProject = await db
       .select()
       .from(projects)
-      .where(eq(projects.id, newProject[0].id));
+      .where(eq(projects.id, newProject[0]!.id));
     console.log('✅ プロジェクト取得成功!');
-    console.log(`   名前: ${fetchedProject[0].name}`);
-    console.log(`   Canvas Data:`, JSON.stringify(fetchedProject[0].canvasData, null, 2));
+    console.log(`   名前: ${fetchedProject[0]?.name}`);
+    console.log(`   Canvas Data:`, JSON.stringify((fetchedProject[0] as any)?.canvasData, null, 2));
     console.log('');
 
     // 4. プロジェクト更新
@@ -80,7 +80,7 @@ async function testDrizzle() {
         description: '更新されたテストプロジェクト - CRUD操作テスト完了',
         canvasData: {
           components: [
-            ...fetchedProject[0].canvasData.components,
+            ...((fetchedProject[0] as any)?.canvasData?.components || []),
             {
               id: 'test-widget-3',
               type: 'Input',
@@ -95,11 +95,11 @@ async function testDrizzle() {
         },
         updatedAt: new Date(),
       })
-      .where(eq(projects.id, newProject[0].id))
+      .where(eq(projects.id, newProject[0]!.id))
       .returning();
     console.log('✅ プロジェクト更新成功!');
-    console.log(`   新しい説明: ${updatedProject[0].description}`);
-    console.log(`   Widget数: ${updatedProject[0].canvasData.components.length} (1つ追加)`);
+    console.log(`   新しい説明: ${updatedProject[0]?.description}`);
+    console.log(`   Widget数: ${(updatedProject[0] as any)?.canvasData?.components?.length} (1つ追加)`);
     console.log('');
 
     // 5. 検索テスト
@@ -113,14 +113,14 @@ async function testDrizzle() {
 
     // 6. プロジェクト削除
     console.log('6️⃣ プロジェクト削除');
-    await db.delete(projects).where(eq(projects.id, newProject[0].id));
+    await db.delete(projects).where(eq(projects.id, newProject[0]!.id));
     console.log('✅ プロジェクト削除成功!');
 
     // 削除確認
     const deletedCheck = await db
       .select()
       .from(projects)
-      .where(eq(projects.id, newProject[0].id));
+      .where(eq(projects.id, newProject[0]!.id));
     if (deletedCheck.length === 0) {
       console.log('   削除確認: プロジェクトが正しく削除されました');
     }

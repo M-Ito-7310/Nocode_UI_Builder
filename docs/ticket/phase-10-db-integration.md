@@ -78,22 +78,22 @@ Neon PostgreSQLデータベースのセットアップ、環境変数設定、Dr
 - [x] 全CRUD操作成功確認
 
 ### 7. API Routes 動作確認
-- [ ] 開発サーバー起動（`npm run dev`） - Phase 11で実施予定
-- [ ] `GET /api/projects` テスト（curl）
-- [ ] `POST /api/projects` テスト（プロジェクト作成）
-- [ ] `GET /api/projects/[id]` テスト（個別取得）
-- [ ] `PUT /api/projects/[id]` テスト（更新）
-- [ ] `DELETE /api/projects/[id]` テスト（削除）
-- [ ] レスポンス形式確認
-- [ ] エラーハンドリング確認
+- [x] 開発サーバー起動（`npm run dev`） - Phase 11で実施完了
+- [x] `GET /api/projects` テスト（curl）
+- [x] `POST /api/projects` テスト（プロジェクト作成）
+- [x] `GET /api/projects/[id]` テスト（個別取得）
+- [x] `PUT /api/projects/[id]` テスト（更新）
+- [x] `DELETE /api/projects/[id]` テスト（削除）
+- [x] レスポンス形式確認
+- [x] エラーハンドリング確認
 
 ### 8. トラブルシューティング対応
 - [x] 環境変数読み込み問題対処（dotenv追加）
 - [x] drizzle-kit バージョン問題対処（最新版にアップグレード）
 - [x] パッケージ依存関係問題対処（drizzle-orm + neon同時アップグレード）
-- [ ] SSL証明書エラー対処確認（未発生）
-- [ ] タイムアウトエラー対処確認（未発生）
-- [ ] 認証エラー対処確認（未発生）
+- [x] SSL証明書エラー対処確認（未発生）
+- [x] タイムアウトエラー対処確認（未発生）
+- [x] 認証エラー対処確認（未発生）
 
 ## 📦 成果物
 
@@ -107,7 +107,7 @@ Neon PostgreSQLデータベースのセットアップ、環境変数設定、Dr
 - [x] dotenv パッケージインストール
 - [x] 動作するデータベース接続（Neon PostgreSQL）
 - [x] マイグレーション完了（projectsテーブル + 3インデックス）
-- [ ] 正常に動作するAPI Routes（Phase 11でテスト予定）
+- [x] 正常に動作するAPI Routes（Phase 11でテスト完了）
 
 ## 🔗 関連ドキュメント
 
@@ -287,13 +287,13 @@ curl http://localhost:3000/api/projects
 - [x] Delete操作が成功する（プロジェクト削除）
 - [x] JSONB型のcanvas_dataが正しく保存・読み込みできる
 
-**Phase 11で実施予定:**
-- [ ] `GET /api/projects` が正常に動作する
-- [ ] `POST /api/projects` でプロジェクト作成が成功する
-- [ ] `GET /api/projects/[id]` でプロジェクト取得が成功する
-- [ ] `PUT /api/projects/[id]` でプロジェクト更新が成功する
-- [ ] `DELETE /api/projects/[id]` でプロジェクト削除が成功する
-- [ ] エラーハンドリングが適切に機能する
+**Phase 11で実施完了:**
+- [x] `GET /api/projects` が正常に動作する
+- [x] `POST /api/projects` でプロジェクト作成が成功する
+- [x] `GET /api/projects/[id]` でプロジェクト取得が成功する
+- [x] `PUT /api/projects/[id]` でプロジェクト更新が成功する
+- [x] `DELETE /api/projects/[id]` でプロジェクト削除が成功する
+- [x] エラーハンドリングが適切に機能する
 
 **オプション（未実施）:**
 - [ ] Drizzle Studioが起動し、projectsテーブルが表示される
@@ -301,4 +301,4 @@ curl http://localhost:3000/api/projects
 ---
 
 **作成日**: 2025年10月21日
-**最終更新**: 2025年10月21日
+**最終更新**: 2025年10月21日（Phase 11でAPI Routes動作確認完了）

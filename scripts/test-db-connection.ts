@@ -23,8 +23,8 @@ async function testConnection() {
     console.log('1️⃣ 基本接続テスト');
     const result = await sql`SELECT NOW() as current_time, version() as pg_version`;
     console.log('✅ 接続成功!');
-    console.log('   サーバー時刻:', result[0].current_time);
-    console.log('   PostgreSQLバージョン:', result[0].pg_version.split(',')[0]);
+    console.log('   サーバー時刻:', result[0]?.current_time);
+    console.log('   PostgreSQLバージョン:', result[0]?.pg_version?.split(',')[0]);
     console.log('');
 
     // 2. テーブル存在確認
