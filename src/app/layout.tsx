@@ -2,14 +2,77 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
 
-const inter = Inter({ subsets: ['latin'] });
+// Google Fontsの読み込み
+const inter = Inter({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-inter',
+});
 
+// メタデータ設定
 export const metadata: Metadata = {
-  title: 'NoCode UI Builder',
-  description: 'A no-code UI builder for creating web interfaces with drag-and-drop',
-  keywords: ['nocode', 'ui builder', 'drag and drop', 'web builder'],
+  title: {
+    default: 'NoCode UI Builder - ドラッグ&ドロップでUIを作成',
+    template: '%s | NoCode UI Builder',
+  },
+  description:
+    'プログラミング不要でWebUIを作成できるノーコードビルダー。ドラッグ&ドロップで直感的にデザイン、HTMLとして出力可能。',
+  keywords: [
+    'ノーコード',
+    'UIビルダー',
+    'ドラッグアンドドロップ',
+    'Webデザイン',
+    'プロトタイピング',
+    'NoCode',
+  ],
   authors: [{ name: 'NoCode UI Builder Team' }],
-  viewport: 'width=device-width, initial-scale=1',
+  creator: 'NoCode UI Builder',
+  publisher: 'NoCode UI Builder',
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  metadataBase: new URL('https://nocode-ui-builder.vercel.app'),
+  openGraph: {
+    type: 'website',
+    locale: 'ja_JP',
+    url: 'https://nocode-ui-builder.vercel.app',
+    title: 'NoCode UI Builder',
+    description: 'プログラミング不要でWebUIを作成できるノーコードビルダー',
+    siteName: 'NoCode UI Builder',
+    images: [
+      {
+        url: '/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'NoCode UI Builder',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'NoCode UI Builder',
+    description: 'プログラミング不要でWebUIを作成できるノーコードビルダー',
+    images: ['/og-image.png'],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  icons: {
+    icon: '/favicon.ico',
+    shortcut: '/favicon-16x16.png',
+    apple: '/apple-touch-icon.png',
+  },
+  manifest: '/site.webmanifest',
 };
 
 export default function RootLayout({
@@ -18,8 +81,33 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="ja">
-      <body className={inter.className}>{children}</body>
+    <html lang="ja" className={inter.variable}>
+      <body className={`${inter.className} antialiased`}>
+        {/* メインコンテンツ */}
+        <main className="min-h-screen bg-gray-50">
+          {children}
+        </main>
+
+        {/* Google Analytics (オプション) */}
+        {process.env.NEXT_PUBLIC_GA_ID && (
+          <>
+            <script
+              async
+              src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_ID}`}
+            />
+            <script
+              dangerouslySetInnerHTML={{
+                __html: `
+                  window.dataLayer = window.dataLayer || [];
+                  function gtag(){dataLayer.push(arguments);}
+                  gtag('js', new Date());
+                  gtag('config', '${process.env.NEXT_PUBLIC_GA_ID}');
+                `,
+              }}
+            />
+          </>
+        )}
+      </body>
     </html>
   );
 }
