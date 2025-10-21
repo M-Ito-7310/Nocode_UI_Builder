@@ -351,6 +351,18 @@ export type Widget =
   | SelectWidget;
 
 /**
+ * Widgetコンポーネントの共通Props
+ */
+export interface WidgetComponentProps<T extends Widget> {
+  widget: T;               // Widget データ
+  isSelected?: boolean;    // 選択状態
+  isHovered?: boolean;     // ホバー状態
+  onSelect?: () => void;   // 選択イベント
+  onHover?: () => void;    // ホバーイベント
+  onPropsChange?: (props: Partial<T['props']>) => void; // プロパティ変更
+}
+
+/**
  * Widget Propsの Union型
  */
 export type WidgetProps =
