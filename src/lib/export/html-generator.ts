@@ -1,277 +1,493 @@
 /**
- * Canvas DataからHTMLを生成するユーティリティ
+ * HTML Generator - メイン生成エンジン
+ *
+ * Canvas データから完全なHTMLファイルを生成します。
+ * すべてのスタイルはインラインで出力され、外部依存はありません。
+ *
+ * @module html-generator
  */
 
-interface CanvasData {
-  components: CanvasComponent[];
-  settings?: CanvasSettings;
-}
-
-interface CanvasComponent {
-  id: string;
-  type: string;
-  position: { x: number; y: number };
-  size: { width: number; height: number };
-  props: Record<string, any>;
-}
-
-interface CanvasSettings {
-  backgroundColor?: string;
-  width?: number;
-  height?: number;
-}
-
-interface GenerateHTMLOptions {
-  title?: string;
-  description?: string;
-}
+import {
+  Widget,
+  TextWidget,
+  InputWidget,
+  ButtonWidget,
+  ImageWidget,
+  TableWidget,
+  SelectWidget,
+} from '@/types/widget';
+import { CanvasData, ExportOptions, ExportResult, HTMLGenerationError } from '@/types/export';
+import { escapeHTML, escapeAttribute } from './sanitizer';
+import { validateCanvasData, validateWidget } from './validator';
+import {
+  hexToRgba,
+  formatInlineStyle,
+} from './style-utils';
 
 /**
- * Canvas DataからHTML文字列を生成
+ * Canvas データから完全なHTMLを生成
  *
- * @param canvasData - Canvas Data
- * @param options - 生成オプション
- * @returns HTML文字列
+ * @param {string} projectName - プロジェクト名
+ * @param {CanvasData} canvasData - キャンバスデータ
+ * @param {ExportOptions} options - エクスポートオプション
+ * @returns {string} 生成されたHTML文字列
+ * @throws {HTMLGenerationError} バリデーションエラーまたは生成エラー
  */
 export function generateHTML(
+  projectName: string,
   canvasData: CanvasData,
-  options: GenerateHTMLOptions = {}
+  options: Partial<ExportOptions> = {}
 ): string {
-  const { title = 'NoCode UI Builder - Exported Page', description = '' } = options;
-  const { components, settings } = canvasData;
-
-  // CSSスタイルの生成
-  const styles = generateCSS(components, settings);
-
-  // HTMLボディの生成
-  const bodyHTML = components
-    .map((component) => generateComponentHTML(component))
-    .join('\n');
-
-  // 完全なHTMLドキュメント
-  return `<!DOCTYPE html>
-<html lang="ja">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="${escapeHTML(description)}">
-  <title>${escapeHTML(title)}</title>
-  <style>
-${styles}
-  </style>
-</head>
-<body>
-  <div class="canvas-container">
-${bodyHTML}
-  </div>
-</body>
-</html>`;
-}
-
-/**
- * CSSスタイルの生成
- */
-function generateCSS(
-  components: CanvasComponent[],
-  settings?: CanvasSettings
-): string {
-  const backgroundColor = settings?.backgroundColor || '#ffffff';
-  const canvasWidth = settings?.width || 1200;
-  const canvasHeight = settings?.height || 800;
-
-  let css = `
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-      background-color: #f3f4f6;
-    }
-
-    .canvas-container {
-      position: relative;
-      width: ${canvasWidth}px;
-      height: ${canvasHeight}px;
-      margin: 0 auto;
-      background-color: ${backgroundColor};
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
-
-    .widget {
-      position: absolute;
-    }
-  `;
-
-  // 各コンポーネントのスタイル
-  components.forEach((component) => {
-    css += `\n${generateComponentCSS(component)}\n`;
-  });
-
-  return css;
-}
-
-/**
- * コンポーネントのHTML生成
- */
-function generateComponentHTML(component: CanvasComponent): string {
-  const { id, type, props } = component;
-
-  switch (type) {
-    case 'Text':
-      return `    <div id="${id}" class="widget widget-text">${escapeHTML(
-        props.content || ''
-      )}</div>`;
-
-    case 'Button':
-      return `    <button id="${id}" class="widget widget-button">${escapeHTML(
-        props.text || 'Button'
-      )}</button>`;
-
-    case 'Input':
-      return `    <div id="${id}" class="widget widget-input">
-      <label>${escapeHTML(props.label || '')}</label>
-      <input type="${props.inputType || 'text'}" placeholder="${escapeHTML(
-        props.placeholder || ''
-      )}" ${props.required ? 'required' : ''}>
-    </div>`;
-
-    case 'Image':
-      return `    <img id="${id}" class="widget widget-image" src="${escapeHTML(
-        props.src || ''
-      )}" alt="${escapeHTML(props.alt || '')}">`;
-
-    case 'Table':
-      return generateTableHTML(id, props);
-
-    case 'Select':
-      return generateSelectHTML(id, props);
-
-    default:
-      return `    <div id="${id}" class="widget">Unsupported widget: ${type}</div>`;
-  }
-}
-
-/**
- * コンポーネントのCSS生成
- */
-function generateComponentCSS(component: CanvasComponent): string {
-  const { id, type, position, size, props } = component;
-
-  let css = `    #${id} {
-      left: ${position.x}px;
-      top: ${position.y}px;
-      width: ${size.width}px;
-      height: ${size.height}px;`;
-
-  switch (type) {
-    case 'Text':
-      css += `
-      font-size: ${props.fontSize || 16}px;
-      color: ${props.color || '#000000'};
-      font-weight: ${props.fontWeight || 'normal'};
-      text-align: ${props.textAlign || 'left'};
-      line-height: ${size.height}px;`;
-      break;
-
-    case 'Button':
-      css += `
-      background-color: ${props.color || '#3B82F6'};
-      color: ${props.textColor || '#FFFFFF'};
-      border: none;
-      border-radius: ${props.borderRadius || 4}px;
-      font-size: ${props.fontSize || 16}px;
-      cursor: pointer;
-      transition: background-color 0.2s;`;
-      break;
-
-    case 'Input':
-      css += `
-      display: flex;
-      flex-direction: column;
-      gap: 8px;`;
-      break;
-
-    case 'Image':
-      css += `
-      object-fit: ${props.objectFit || 'cover'};`;
-      break;
-  }
-
-  css += `
-    }`;
-
-  return css;
-}
-
-/**
- * テーブルHTML生成
- */
-function generateTableHTML(id: string, props: any): string {
-  const columns = props.columns || [];
-  const data = props.data || [];
-
-  const headerHTML = columns
-    .map((col: any) => `<th>${escapeHTML(col.label || col.key)}</th>`)
-    .join('');
-
-  const rowsHTML = data
-    .map(
-      (row: any) =>
-        `<tr>${columns
-          .map((col: any) => `<td>${escapeHTML(String(row[col.key] || ''))}</td>`)
-          .join('')}</tr>`
-    )
-    .join('\n        ');
-
-  return `    <div id="${id}" class="widget widget-table">
-      <table>
-        <thead>
-          <tr>${headerHTML}</tr>
-        </thead>
-        <tbody>
-        ${rowsHTML}
-        </tbody>
-      </table>
-    </div>`;
-}
-
-/**
- * セレクトHTML生成
- */
-function generateSelectHTML(id: string, props: any): string {
-  const options = props.options || [];
-  const optionsHTML = options
-    .map(
-      (opt: any) =>
-        `<option value="${escapeHTML(opt.value)}">${escapeHTML(
-          opt.label || opt.value
-        )}</option>`
-    )
-    .join('\n        ');
-
-  return `    <div id="${id}" class="widget widget-select">
-      <label>${escapeHTML(props.label || '')}</label>
-      <select>
-        ${optionsHTML}
-      </select>
-    </div>`;
-}
-
-/**
- * HTMLエスケープ (XSS対策)
- */
-function escapeHTML(str: string): string {
-  const escapeMap: Record<string, string> = {
-    '&': '&amp;',
-    '<': '&lt;',
-    '>': '&gt;',
-    '"': '&quot;',
-    "'": '&#x27;',
-    '/': '&#x2F;',
+  // デフォルトオプション
+  const opts: ExportOptions = {
+    projectName,
+    includeComments: true,
+    prettify: true,
+    doctype: 'html5',
+    ...options,
   };
 
-  return String(str).replace(/[&<>"'/]/g, (char) => escapeMap[char] || char);
+  // バリデーション
+  validateCanvasData(canvasData);
+
+  const widgets = canvasData.components || [];
+  const settings = canvasData.settings || {};
+
+  // Widget HTMLの生成
+  const widgetHTMLArray = widgets.map((widget) => {
+    try {
+      return generateWidgetHTML(widget, opts);
+    } catch (error) {
+      if (error instanceof HTMLGenerationError) {
+        throw error;
+      }
+      throw new HTMLGenerationError(
+        `Failed to generate HTML for widget: ${(error as Error).message}`,
+        widget.id,
+        widget.type
+      );
+    }
+  });
+
+  const widgetHTML = opts.prettify
+    ? widgetHTMLArray.map((html) => `    ${html}`).join('\n')
+    : widgetHTMLArray.join('');
+
+  // HTML構造の組み立て
+  const html = buildHTMLDocument(projectName, widgetHTML, settings, opts);
+
+  return html;
+}
+
+/**
+ * 完全なHTMLドキュメント構造を構築
+ */
+function buildHTMLDocument(
+  projectName: string,
+  widgetHTML: string,
+  settings: any,
+  options: ExportOptions
+): string {
+  const doctype = options.doctype === 'html5' ? '<!DOCTYPE html>' : '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">';
+  const title = escapeHTML(projectName);
+  const bgColor = settings.backgroundColor || '#FFFFFF';
+  const generatorComment = options.includeComments
+    ? '\n  <!-- Generated by NoCode UI Builder - https://nocode-ui-builder.vercel.app -->'
+    : '';
+
+  const newline = options.prettify ? '\n' : '';
+  const indent = options.prettify ? '  ' : '';
+
+  return `${doctype}${newline}<html lang="ja">${newline}<head>${newline}${indent}<meta charset="UTF-8">${newline}${indent}<meta name="viewport" content="width=device-width, initial-scale=1.0">${newline}${indent}<title>${title} - NoCode UI Builder</title>${newline}${indent}<style>${newline}${indent}${indent}/* Reset CSS */${newline}${indent}${indent}* {${newline}${indent}${indent}${indent}margin: 0;${newline}${indent}${indent}${indent}padding: 0;${newline}${indent}${indent}${indent}box-sizing: border-box;${newline}${indent}${indent}}${newline}${newline}${indent}${indent}body {${newline}${indent}${indent}${indent}font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;${newline}${indent}${indent}${indent}-webkit-font-smoothing: antialiased;${newline}${indent}${indent}${indent}-moz-osx-font-smoothing: grayscale;${newline}${indent}${indent}}${newline}${newline}${indent}${indent}/* Canvas Container */${newline}${indent}${indent}.canvas-container {${newline}${indent}${indent}${indent}position: relative;${newline}${indent}${indent}${indent}width: 100%;${newline}${indent}${indent}${indent}min-height: 100vh;${newline}${indent}${indent}${indent}background-color: ${bgColor};${newline}${indent}${indent}}${newline}${newline}${indent}${indent}/* Widget Base */${newline}${indent}${indent}.widget {${newline}${indent}${indent}${indent}position: absolute;${newline}${indent}${indent}}${newline}${indent}</style>${newline}</head>${newline}<body>${newline}${indent}<div class="canvas-container">${newline}${widgetHTML}${newline}${indent}</div>${generatorComment}${newline}</body>${newline}</html>`;
+}
+
+/**
+ * Widget種類に応じたHTML生成関数を呼び出し
+ *
+ * @param {Widget} widget - Widget データ
+ * @param {ExportOptions} options - エクスポートオプション
+ * @returns {string} 生成されたWidget HTML
+ */
+function generateWidgetHTML(widget: Widget, options: ExportOptions): string {
+  // バリデーション
+  validateWidget(widget);
+
+  switch (widget.type) {
+    case 'Text':
+      return generateTextHTML(widget as TextWidget, options);
+    case 'Input':
+      return generateInputHTML(widget as InputWidget, options);
+    case 'Button':
+      return generateButtonHTML(widget as ButtonWidget, options);
+    case 'Image':
+      return generateImageHTML(widget as ImageWidget, options);
+    case 'Table':
+      return generateTableHTML(widget as TableWidget, options);
+    case 'Select':
+      return generateSelectHTML(widget as SelectWidget, options);
+    default:
+      throw new HTMLGenerationError(
+        `Unknown widget type: ${(widget as any).type}`,
+        (widget as any).id,
+        (widget as any).type
+      );
+  }
+}
+
+/**
+ * Text Widget のHTML生成
+ */
+export function generateTextHTML(widget: TextWidget, options: ExportOptions): string {
+  const { content, fontSize, color, fontWeight, textAlign, fontFamily, lineHeight } = widget.props;
+  const { x, y } = widget.position;
+  const { width, height } = widget.size;
+
+  const style = formatInlineStyle({
+    position: 'absolute',
+    left: `${x}px`,
+    top: `${y}px`,
+    width: `${width}px`,
+    height: `${height}px`,
+    fontSize: `${fontSize}px`,
+    color: color,
+    fontWeight: fontWeight,
+    textAlign: textAlign,
+    fontFamily: fontFamily || 'inherit',
+    lineHeight: lineHeight ? String(lineHeight) : 'normal',
+    display: 'flex',
+    alignItems: 'center',
+    padding: '4px',
+    wordBreak: 'break-word',
+    overflow: 'hidden',
+  });
+
+  const escapedContent = escapeHTML(content || 'Text');
+  const comment = options.includeComments ? `<!-- Text Widget: ${widget.id} -->` : '';
+
+  return `${comment}<div class="widget" data-widget-id="${escapeAttribute(widget.id)}" data-widget-type="Text" style="${style}">${escapedContent}</div>`;
+}
+
+/**
+ * Input Widget のHTML生成
+ */
+export function generateInputHTML(widget: InputWidget, options: ExportOptions): string {
+  const { label, placeholder, inputType, required, defaultValue } = widget.props;
+  const { x, y } = widget.position;
+  const { width: containerWidth } = widget.size;
+
+  const containerStyle = formatInlineStyle({
+    position: 'absolute',
+    left: `${x}px`,
+    top: `${y}px`,
+    width: `${containerWidth}px`,
+    padding: '8px',
+  });
+
+  const labelStyle = formatInlineStyle({
+    display: 'block',
+    marginBottom: '8px',
+    fontSize: '14px',
+    fontWeight: '500',
+    color: '#374151',
+  });
+
+  const inputStyle = formatInlineStyle({
+    width: '100%',
+    maxWidth: '100%',
+    padding: '10px 12px',
+    border: '1px solid #D1D5DB',
+    borderRadius: '6px',
+    fontSize: '14px',
+    fontFamily: 'inherit',
+    backgroundColor: '#FFFFFF',
+    color: '#1F2937',
+    outline: 'none',
+  });
+
+  const escapedLabel = escapeHTML(label || 'Input');
+  const escapedPlaceholder = escapeAttribute(placeholder || '');
+  const escapedDefaultValue = escapeAttribute(defaultValue || '');
+  const requiredAttr = required ? ' required' : '';
+  const comment = options.includeComments ? `<!-- Input Widget: ${widget.id} -->` : '';
+
+  const requiredMark = required ? '<span style="color: #EF4444; margin-left: 4px;">*</span>' : '';
+
+  return `${comment}<div class="widget" data-widget-id="${escapeAttribute(widget.id)}" data-widget-type="Input" style="${containerStyle}"><label style="${labelStyle}">${escapedLabel}${requiredMark}</label><input type="${inputType}" placeholder="${escapedPlaceholder}" value="${escapedDefaultValue}"${requiredAttr} style="${inputStyle}" aria-label="${escapedLabel}" /></div>`;
+}
+
+/**
+ * Button Widget のHTML生成
+ */
+export function generateButtonHTML(widget: ButtonWidget, options: ExportOptions): string {
+  const { text, variant, size, color, textColor, borderRadius, disabled } = widget.props;
+  const { x, y } = widget.position;
+  const { width, height } = widget.size;
+
+  // バリアント別スタイル
+  const variantStyles: Record<typeof variant, any> = {
+    primary: {
+      backgroundColor: color,
+      color: textColor,
+      border: 'none',
+    },
+    secondary: {
+      backgroundColor: hexToRgba(color, 0.1),
+      color: color,
+      border: 'none',
+    },
+    outline: {
+      backgroundColor: 'transparent',
+      color: color,
+      border: `2px solid ${color}`,
+    },
+    ghost: {
+      backgroundColor: 'transparent',
+      color: color,
+      border: 'none',
+    },
+    danger: {
+      backgroundColor: '#EF4444',
+      color: '#FFFFFF',
+      border: 'none',
+    },
+  };
+
+  // サイズ別スタイル
+  const sizeStyles: Record<typeof size, any> = {
+    small: {
+      padding: '8px 16px',
+      fontSize: '14px',
+    },
+    medium: {
+      padding: '12px 24px',
+      fontSize: '16px',
+    },
+    large: {
+      padding: '16px 32px',
+      fontSize: '18px',
+    },
+  };
+
+  const style = formatInlineStyle({
+    position: 'absolute',
+    left: `${x}px`,
+    top: `${y}px`,
+    width: `${width}px`,
+    height: `${height}px`,
+    borderRadius: `${borderRadius}px`,
+    fontWeight: '500',
+    cursor: disabled ? 'not-allowed' : 'pointer',
+    fontFamily: 'inherit',
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    opacity: disabled ? '0.5' : '1',
+    transition: 'opacity 0.2s ease',
+    ...variantStyles[variant],
+    ...sizeStyles[size],
+  });
+
+  const escapedText = escapeHTML(text || 'Button');
+  const disabledAttr = disabled ? ' disabled' : '';
+  const comment = options.includeComments ? `<!-- Button Widget: ${widget.id} -->` : '';
+
+  return `${comment}<button class="widget" data-widget-id="${escapeAttribute(widget.id)}" data-widget-type="Button"${disabledAttr} style="${style}" aria-label="${escapedText}">${escapedText}</button>`;
+}
+
+/**
+ * Image Widget のHTML生成
+ */
+export function generateImageHTML(widget: ImageWidget, options: ExportOptions): string {
+  const { src, alt, objectFit, borderRadius, opacity } = widget.props;
+  const { x, y } = widget.position;
+  const { width, height } = widget.size;
+
+  const containerStyle = formatInlineStyle({
+    position: 'absolute',
+    left: `${x}px`,
+    top: `${y}px`,
+    width: `${width}px`,
+    height: `${height}px`,
+    overflow: 'hidden',
+  });
+
+  const imageStyle = formatInlineStyle({
+    width: '100%',
+    height: '100%',
+    objectFit: objectFit,
+    borderRadius: `${borderRadius}px`,
+    opacity: String(opacity),
+  });
+
+  const escapedSrc = escapeAttribute(src || '');
+  const escapedAlt = escapeAttribute(alt || 'Image');
+  const comment = options.includeComments ? `<!-- Image Widget: ${widget.id} -->` : '';
+
+  return `${comment}<div class="widget" data-widget-id="${escapeAttribute(widget.id)}" data-widget-type="Image" style="${containerStyle}"><img src="${escapedSrc}" alt="${escapedAlt}" style="${imageStyle}" /></div>`;
+}
+
+/**
+ * Table Widget のHTML生成
+ */
+export function generateTableHTML(widget: TableWidget, options: ExportOptions): string {
+  const {
+    columns,
+    data,
+    striped,
+    bordered,
+    headerBgColor,
+    headerTextColor,
+  } = widget.props;
+  const { x, y } = widget.position;
+  const { width } = widget.size;
+
+  const containerStyle = formatInlineStyle({
+    position: 'absolute',
+    left: `${x}px`,
+    top: `${y}px`,
+    width: `${width}px`,
+    overflow: 'auto',
+    padding: '8px',
+  });
+
+  const tableStyle = formatInlineStyle({
+    width: '100%',
+    borderCollapse: 'collapse',
+    fontSize: '14px',
+    fontFamily: 'inherit',
+  });
+
+  const theadStyle = formatInlineStyle({
+    backgroundColor: headerBgColor,
+    color: headerTextColor,
+  });
+
+  const thBaseStyle = {
+    padding: '12px',
+    textAlign: 'left',
+    fontWeight: '600',
+    borderBottom: '2px solid #E5E7EB',
+  };
+
+  const tdBaseStyle = {
+    padding: '12px',
+    borderBottom: '1px solid #E5E7EB',
+  };
+
+  if (bordered) {
+    Object.assign(thBaseStyle, { border: '1px solid #E5E7EB' });
+    Object.assign(tdBaseStyle, { border: '1px solid #E5E7EB' });
+  }
+
+  const comment = options.includeComments ? `<!-- Table Widget: ${widget.id} -->` : '';
+
+  // ヘッダー行の生成
+  const headerCells = columns
+    .map((col) => {
+      const colStyle = formatInlineStyle({
+        ...thBaseStyle,
+        width: col.width ? `${col.width}px` : undefined,
+      });
+      return `<th style="${colStyle}">${escapeHTML(col.label)}</th>`;
+    })
+    .join('');
+
+  // データ行の生成
+  const bodyRows = data
+    .map((row, rowIndex) => {
+      const rowBg = striped && rowIndex % 2 === 1 ? '#F9FAFB' : '#FFFFFF';
+      const rowStyle = formatInlineStyle({
+        backgroundColor: rowBg,
+      });
+
+      const cells = columns
+        .map((col) => {
+          const cellValue = row[col.key] !== undefined ? String(row[col.key]) : '-';
+          const cellStyle = formatInlineStyle(tdBaseStyle);
+          return `<td style="${cellStyle}">${escapeHTML(cellValue)}</td>`;
+        })
+        .join('');
+
+      return `<tr style="${rowStyle}">${cells}</tr>`;
+    })
+    .join('');
+
+  return `${comment}<div class="widget" data-widget-id="${escapeAttribute(widget.id)}" data-widget-type="Table" style="${containerStyle}"><table style="${tableStyle}"><thead style="${theadStyle}"><tr>${headerCells}</tr></thead><tbody>${bodyRows}</tbody></table></div>`;
+}
+
+/**
+ * Select Widget のHTML生成
+ */
+export function generateSelectHTML(widget: SelectWidget, options: ExportOptions): string {
+  const { label, options: selectOptions, defaultValue, placeholder, required } = widget.props;
+  const { x, y } = widget.position;
+  const { width: containerWidth } = widget.size;
+
+  const containerStyle = formatInlineStyle({
+    position: 'absolute',
+    left: `${x}px`,
+    top: `${y}px`,
+    width: `${containerWidth}px`,
+    padding: '8px',
+  });
+
+  const labelStyle = formatInlineStyle({
+    display: 'block',
+    marginBottom: '8px',
+    fontSize: '14px',
+    fontWeight: '500',
+    color: '#374151',
+  });
+
+  const selectStyle = formatInlineStyle({
+    width: '100%',
+    maxWidth: '100%',
+    padding: '10px 12px',
+    paddingRight: '36px',
+    border: '1px solid #D1D5DB',
+    borderRadius: '6px',
+    fontSize: '14px',
+    fontFamily: 'inherit',
+    backgroundColor: '#FFFFFF',
+    color: '#1F2937',
+    cursor: 'pointer',
+    appearance: 'none',
+    backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236B7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`,
+    backgroundRepeat: 'no-repeat',
+    backgroundPosition: 'right 8px center',
+    backgroundSize: '20px',
+  });
+
+  const escapedLabel = escapeHTML(label || 'Select');
+  const requiredAttr = required ? ' required' : '';
+  const comment = options.includeComments ? `<!-- Select Widget: ${widget.id} -->` : '';
+
+  const requiredMark = required ? '<span style="color: #EF4444; margin-left: 4px;">*</span>' : '';
+
+  // プレースホルダーオプション
+  const placeholderOption = placeholder
+    ? `<option value="" disabled selected>${escapeHTML(placeholder)}</option>`
+    : '';
+
+  // 選択肢オプション
+  const optionElements = selectOptions
+    .map((opt) => {
+      const selectedAttr = opt.value === defaultValue ? ' selected' : '';
+      return `<option value="${escapeAttribute(opt.value)}"${selectedAttr}>${escapeHTML(opt.label)}</option>`;
+    })
+    .join('');
+
+  return `${comment}<div class="widget" data-widget-id="${escapeAttribute(widget.id)}" data-widget-type="Select" style="${containerStyle}"><label style="${labelStyle}">${escapedLabel}${requiredMark}</label><select${requiredAttr} style="${selectStyle}" aria-label="${escapedLabel}">${placeholderOption}${optionElements}</select></div>`;
+}
+
+/**
+ * エクスポート結果の統計情報を生成
+ */
+export function generateExportResult(html: string, canvasData: CanvasData): ExportResult {
+  return {
+    html,
+    size: new Blob([html]).size,
+    widgetCount: canvasData.components.length,
+    generatedAt: new Date(),
+  };
 }

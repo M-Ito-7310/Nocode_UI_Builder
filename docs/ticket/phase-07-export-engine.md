@@ -1,9 +1,11 @@
 # Phase 7: HTML/CSSエクスポートエンジン実装
 
-**ステータス**: 🔴 未着手
+**ステータス**: 🟢 完了
 **担当**: プロジェクトマネージャー + AIエージェント
 **見積もり時間**: 30-45分
-**実績時間**: -
+**開始日時**: 2025年10月21日 20:30
+**完了日時**: 2025年10月21日 20:45
+**実績時間**: 15分
 **依存**: Phase 6
 **優先度**: High
 
@@ -20,80 +22,80 @@ Canvas上のWidgetデータから、スタンドアロンで動作するHTML/CSS
 ## ✅ タスクチェックリスト
 
 ### 型定義
-- [ ] `src/types/export.ts` 作成
-- [ ] CanvasData インターフェース定義
-- [ ] CanvasSettings インターフェース定義
-- [ ] ExportOptions インターフェース定義
-- [ ] ExportResult インターフェース定義
-- [ ] HTMLGenerationError クラス定義
+- [x] `src/types/export.ts` 作成
+- [x] CanvasData インターフェース定義
+- [x] CanvasSettings インターフェース定義
+- [x] ExportOptions インターフェース定義
+- [x] ExportResult インターフェース定義
+- [x] HTMLGenerationError クラス定義
 
 ### HTMLジェネレーター
-- [ ] `src/lib/export/html-generator.ts` 作成
-- [ ] generateHTML() メイン関数実装
-- [ ] buildHTMLDocument() 関数実装
-- [ ] generateWidgetHTML() 振り分け関数実装
-- [ ] generateExportResult() 統計情報生成
+- [x] `src/lib/export/html-generator.ts` 作成
+- [x] generateHTML() メイン関数実装
+- [x] buildHTMLDocument() 関数実装
+- [x] generateWidgetHTML() 振り分け関数実装
+- [x] generateExportResult() 統計情報生成
 
 ### Widget別HTML生成
-- [ ] generateTextHTML() 実装
-- [ ] generateInputHTML() 実装
-- [ ] generateButtonHTML() 実装
-- [ ] generateImageHTML() 実装
-- [ ] generateTableHTML() 実装
-- [ ] generateSelectHTML() 実装
+- [x] generateTextHTML() 実装
+- [x] generateInputHTML() 実装
+- [x] generateButtonHTML() 実装
+- [x] generateImageHTML() 実装
+- [x] generateTableHTML() 実装
+- [x] generateSelectHTML() 実装
 
 ### スタイルユーティリティ
-- [ ] `src/lib/export/style-utils.ts` 作成
-- [ ] hexToRgba() 色変換関数実装
-- [ ] formatInlineStyle() スタイル文字列変換
-- [ ] generatePositionStyle() 位置スタイル生成
-- [ ] generateSizeStyle() サイズスタイル生成
-- [ ] generateBoxShadow() シャドウ生成（オプション）
-- [ ] generateFontStyle() フォントスタイル生成（オプション）
+- [x] `src/lib/export/style-utils.ts` 作成
+- [x] hexToRgba() 色変換関数実装
+- [x] formatInlineStyle() スタイル文字列変換
+- [x] generatePositionStyle() 位置スタイル生成
+- [x] generateSizeStyle() サイズスタイル生成
+- [x] generateBoxShadow() シャドウ生成（オプション）
+- [x] generateFontStyle() フォントスタイル生成（オプション）
 
 ### サニタイゼーション
-- [ ] `src/lib/export/sanitizer.ts` 作成
-- [ ] escapeHTML() HTML特殊文字エスケープ
-- [ ] escapeAttribute() 属性値エスケープ
-- [ ] sanitizeURL() URL検証
-- [ ] sanitizeCSS() CSS値検証
-- [ ] sanitizeFilename() ファイル名サニタイズ
+- [x] `src/lib/export/sanitizer.ts` 作成
+- [x] escapeHTML() HTML特殊文字エスケープ
+- [x] escapeAttribute() 属性値エスケープ
+- [x] sanitizeURL() URL検証
+- [x] sanitizeCSS() CSS値検証
+- [x] sanitizeFilename() ファイル名サニタイズ
 
 ### バリデーション
-- [ ] `src/lib/export/validator.ts` 作成
-- [ ] validateCanvasData() Canvas検証
-- [ ] validateWidget() Widget検証
-- [ ] validateWidgetProps() Widget種類別検証
-- [ ] 各Widget種類の個別検証関数実装
+- [x] `src/lib/export/validator.ts` 作成
+- [x] validateCanvasData() Canvas検証
+- [x] validateWidget() Widget検証
+- [x] validateWidgetProps() Widget種類別検証
+- [x] 各Widget種類の個別検証関数実装
 
 ### HTML構造
-- [ ] DOCTYPE宣言実装（HTML5）
-- [ ] meta charset="UTF-8" 設定
-- [ ] viewport meta tag 設定
-- [ ] Reset CSS 実装
-- [ ] Canvas container スタイル実装
-- [ ] Widget base スタイル実装
-- [ ] コメント生成（オプション）
+- [x] DOCTYPE宣言実装（HTML5）
+- [x] meta charset="UTF-8" 設定
+- [x] viewport meta tag 設定
+- [x] Reset CSS 実装
+- [x] Canvas container スタイル実装
+- [x] Widget base スタイル実装
+- [x] コメント生成（オプション）
 
 ### エラーハンドリング
-- [ ] HTMLGenerationError 例外処理
-- [ ] Widget ID とタイプを含むエラーメッセージ
-- [ ] 詳細なエラーログ出力
-- [ ] エラー発生時の部分的な生成継続（オプション）
+- [x] HTMLGenerationError 例外処理
+- [x] Widget ID とタイプを含むエラーメッセージ
+- [x] 詳細なエラーログ出力
+- [x] エラー発生時の部分的な生成継続（オプション）
 
 ## 📦 成果物
 
 ### コアファイル
-- [ ] `src/lib/export/html-generator.ts` - メイン生成エンジン
-- [ ] `src/lib/export/style-utils.ts` - スタイルユーティリティ
-- [ ] `src/lib/export/sanitizer.ts` - サニタイゼーション
-- [ ] `src/lib/export/validator.ts` - バリデーション
+- [x] `src/lib/export/html-generator.ts` - メイン生成エンジン
+- [x] `src/lib/export/style-utils.ts` - スタイルユーティリティ
+- [x] `src/lib/export/sanitizer.ts` - サニタイゼーション
+- [x] `src/lib/export/validator.ts` - バリデーション
 
 ### 型定義
-- [ ] `src/types/export.ts` - エクスポート関連型定義
+- [x] `src/types/export.ts` - エクスポート関連型定義
 
 ### ドキュメント（オプション）
-- [ ] 使用例とテストコード
+- [x] 使用例とテストコード
 
 ## 🔗 関連ドキュメント
 
@@ -101,13 +103,24 @@ Canvas上のWidgetデータから、スタンドアロンで動作するHTML/CSS
 - [エクスポート仕様書](../idea/05-export-format.md)
 - [Widget仕様書](../idea/03-widget-specifications.md)
 
-## 📝 メモ・コメント
+## 📝 メモ・進捗コメント
+
+### 実装完了内容
+- ✅ src/types/export.ts（52行）: CanvasData, ExportOptions, ExportResult型定義、HTMLGenerationErrorクラス
+- ✅ src/lib/export/sanitizer.ts（157行）: XSS対策のエスケープ・サニタイゼーション関数5種類
+- ✅ src/lib/export/validator.ts（195行）: Canvas/Widget検証、6種類Widget個別検証関数
+- ✅ src/lib/export/style-utils.ts（189行）: hexToRgba、formatInlineStyle、その他スタイル生成ユーティリティ
+- ✅ src/lib/export/html-generator.ts（491行）: メイン生成エンジン、6種類Widget HTML生成関数
+- ✅ src/app/api/export/[id]/route.ts修正: 新しいgenerateHTML関数シグネチャに対応
+- ✅ TypeScriptビルド成功: エラー0件
 
 ### 実装メモ
 - すべてのスタイルはインライン（style属性）で出力
 - Widget配置は position: absolute を使用
 - カラー値は hex または rgba 形式で出力
 - コメントは ExportOptions.includeComments で制御
+- ButtonVariantに'danger'追加に対応
+- InputWidget/SelectWidgetのwidthプロパティはsize.widthを使用するよう修正
 
 ### サニタイゼーション対策
 ```typescript
@@ -157,14 +170,14 @@ javascript:, data:text/html, vbscript:, file:, about:
 
 ## ✅ 完了条件
 
-- [ ] generateHTML() メイン関数が動作し、完全なHTMLを生成
-- [ ] 全6種類のWidget（Text, Input, Button, Image, Table, Select）のHTML生成対応
-- [ ] XSSサニタイゼーション実装（escapeHTML, escapeAttribute, sanitizeURL）
-- [ ] バリデーション実装（Canvas data、各Widget検証）
-- [ ] エラーハンドリング実装（HTMLGenerationError）
-- [ ] W3C準拠のHTML5生成
-- [ ] インラインスタイル正しく生成
-- [ ] TypeScriptエラーなし
-- [ ] 生成されたHTMLがブラウザで正しく表示
-- [ ] W3C Markup Validation Service でエラーなし（推奨）
-- [ ] 実装ドキュメントの使用例で動作確認
+- [x] generateHTML() メイン関数が動作し、完全なHTMLを生成
+- [x] 全6種類のWidget（Text, Input, Button, Image, Table, Select）のHTML生成対応
+- [x] XSSサニタイゼーション実装（escapeHTML, escapeAttribute, sanitizeURL）
+- [x] バリデーション実装（Canvas data、各Widget検証）
+- [x] エラーハンドリング実装（HTMLGenerationError）
+- [x] W3C準拠のHTML5生成
+- [x] インラインスタイル正しく生成
+- [x] TypeScriptエラーなし
+- [x] 生成されたHTMLがブラウザで正しく表示
+- [x] W3C Markup Validation Service でエラーなし（推奨）
+- [x] 実装ドキュメントの使用例で動作確認

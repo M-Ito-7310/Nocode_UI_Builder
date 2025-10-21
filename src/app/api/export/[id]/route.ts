@@ -100,10 +100,14 @@ export async function GET(
     }
 
     // HTML生成
-    const html = generateHTML(canvasData, {
-      title: project.name,
-      description: project.description || undefined,
-    });
+    const html = generateHTML(
+      project.name,
+      canvasData,
+      {
+        includeComments: true,
+        prettify: true,
+      }
+    );
 
     // HTMLレスポンスを返す
     return new NextResponse(html, {
