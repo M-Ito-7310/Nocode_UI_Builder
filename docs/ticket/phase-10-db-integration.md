@@ -1,9 +1,11 @@
 # Phase 10: データベース統合とマイグレーション
 
-**ステータス**: 🔴 未着手
+**ステータス**: 🟢 完了（テストスクリプト準備完了 - ユーザー実行待ち）
 **担当**: プロジェクトマネージャー + AIエージェント
 **見積もり時間**: 15-30分
-**実績時間**: -
+**開始日時**: 2025年10月21日 23:05
+**完了日時**: 2025年10月21日 23:10
+**実績時間**: 5分（テストスクリプト作成）
 **依存**: Phase 9（ページ実装完了）
 **優先度**: High
 
@@ -36,8 +38,8 @@ Neon PostgreSQLデータベースのセットアップ、環境変数設定、Dr
 - [ ] 環境変数読み込みテスト実行
 
 ### 3. Drizzle マイグレーション実行
-- [ ] `drizzle.config.ts` 設定確認
-- [ ] `npx drizzle-kit generate` 実行
+- [x] `drizzle.config.ts` 設定確認（最新形式に更新済み）
+- [ ] `npx drizzle-kit generate` 実行（ユーザー実行待ち）
 - [ ] マイグレーションファイル生成確認（`drizzle/` フォルダ）
 - [ ] 生成されたSQLファイル確認
 - [ ] `npx drizzle-kit push` 実行
@@ -54,22 +56,22 @@ Neon PostgreSQLデータベースのセットアップ、環境変数設定、Dr
 - [ ] データ削除テスト
 
 ### 5. データベース接続テスト
-- [ ] `scripts/test-db-connection.ts` 作成
-- [ ] 基本接続テスト実装
-- [ ] テーブル存在確認テスト実装
-- [ ] カラム構造確認テスト実装
-- [ ] インデックス確認テスト実装
-- [ ] テストスクリプト実行
+- [x] `scripts/test-db-connection.ts` 作成
+- [x] 基本接続テスト実装
+- [x] テーブル存在確認テスト実装
+- [x] カラム構造確認テスト実装
+- [x] インデックス確認テスト実装
+- [ ] テストスクリプト実行（ユーザー実行待ち）
 - [ ] 全テスト成功確認
 
 ### 6. Drizzle ORM 接続テスト
-- [ ] `scripts/test-drizzle.ts` 作成
-- [ ] プロジェクト作成テスト実装
-- [ ] プロジェクト取得テスト実装
-- [ ] プロジェクト更新テスト実装
-- [ ] プロジェクト削除テスト実装
-- [ ] JSONB データ読み書きテスト実装
-- [ ] テストスクリプト実行
+- [x] `scripts/test-drizzle.ts` 作成
+- [x] プロジェクト作成テスト実装
+- [x] プロジェクト取得テスト実装
+- [x] プロジェクト更新テスト実装
+- [x] プロジェクト削除テスト実装
+- [x] JSONB データ読み書きテスト実装
+- [ ] テストスクリプト実行（ユーザー実行待ち）
 - [ ] 全CRUD操作成功確認
 
 ### 7. API Routes 動作確認
@@ -93,12 +95,14 @@ Neon PostgreSQLデータベースのセットアップ、環境変数設定、Dr
 ## 📦 成果物
 
 - [ ] `.env.local` ファイル（ユーザー作成、Gitには含めない）
-- [ ] `drizzle/0000_initial_schema.sql` マイグレーションファイル
-- [ ] `drizzle/meta/` マイグレーション履歴
-- [ ] `scripts/test-db-connection.ts` テストスクリプト
-- [ ] `scripts/test-drizzle.ts` ORMテストスクリプト
-- [ ] 動作するデータベース接続
-- [ ] 正常に動作するAPI Routes
+- [ ] `drizzle/0000_initial_schema.sql` マイグレーションファイル（ユーザー生成待ち）
+- [ ] `drizzle/meta/` マイグレーション履歴（ユーザー生成待ち）
+- [x] `scripts/test-env.ts` 環境変数テストスクリプト
+- [x] `scripts/test-db-connection.ts` テストスクリプト
+- [x] `scripts/test-drizzle.ts` ORMテストスクリプト
+- [x] `drizzle.config.ts` 最新形式への更新
+- [ ] 動作するデータベース接続（ユーザーセットアップ待ち）
+- [ ] 正常に動作するAPI Routes（データベース接続後）
 
 ## 🔗 関連ドキュメント
 
@@ -107,7 +111,50 @@ Neon PostgreSQLデータベースのセットアップ、環境変数設定、Dr
 - [Neon公式ドキュメント](https://neon.tech/docs)
 - [Drizzle ORM公式ドキュメント](https://orm.drizzle.team)
 
-## 📝 メモ・コメント
+## 📝 メモ・進捗コメント
+
+### Phase 10 実装完了記録（2025-10-21 23:10）
+
+**AI完了分:**
+1. ✅ drizzle.config.ts を最新形式に更新
+   - `driver: 'pg'` → `dialect: 'postgresql'`
+   - `dbCredentials.connectionString` → `dbCredentials.url`
+   - Drizzle Kit v0.20以降に対応
+
+2. ✅ scripts/test-env.ts 作成（37行）
+   - DATABASE_URL環境変数の存在確認
+   - 接続先表示（パスワード部分を隠蔽）
+   - 次のステップガイド表示
+
+3. ✅ scripts/test-db-connection.ts 作成（81行）
+   - Neon PostgreSQL基本接続テスト
+   - テーブル一覧表示
+   - projectsテーブル構造確認
+   - インデックス確認
+   - エラーハンドリングとトラブルシューティングガイド
+
+4. ✅ scripts/test-drizzle.ts 作成（135行）
+   - 完全なCRUD操作テスト（Create, Read, Update, Delete）
+   - プロジェクト作成（2つのWidget含む）
+   - プロジェクト取得
+   - プロジェクト更新（Widget追加）
+   - プロジェクト削除と確認
+   - JSONB型データの読み書きテスト
+
+**ユーザー実行が必要な作業:**
+1. Neonアカウント作成とデータベースセットアップ
+   - 詳細: docs/implementation/20251021_10-database-integration.md 参照
+2. .env.local に DATABASE_URL を設定
+3. npx drizzle-kit generate でマイグレーション生成
+4. npx drizzle-kit push でデータベースに反映
+5. 各テストスクリプトの実行と動作確認
+
+**次のPhaseへの引き継ぎ事項:**
+- Phase 11（UI/UXテスト）では、データベース連携済みのビルダーで実際にプロジェクトを作成・保存してテスト
+- データベースが正しく動作していることが前提
+
+**Git commit情報:**
+- 次のコミットで記録
 
 ### 実装時の注意点
 
@@ -191,6 +238,14 @@ curl http://localhost:3000/api/projects
 
 ## ✅ 完了条件
 
+**AI完了分:**
+- [x] `drizzle.config.ts` が最新形式に更新されている
+- [x] `scripts/test-env.ts` テストスクリプトが作成されている
+- [x] `scripts/test-db-connection.ts` テストスクリプトが作成されている
+- [x] `scripts/test-drizzle.ts` テストスクリプトが作成されている
+- [x] テストスクリプトに完全なCRUD操作テストが実装されている
+
+**ユーザー実行待ち:**
 - [ ] Neonデータベースが作成されている
 - [ ] `.env.local` ファイルに `DATABASE_URL` が設定されている
 - [ ] `npx drizzle-kit generate` が成功する
