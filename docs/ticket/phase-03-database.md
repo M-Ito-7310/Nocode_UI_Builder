@@ -87,7 +87,7 @@ Drizzle ORMを使用したデータベーススキーマの定義と、Neon Post
 - 環境変数未設定時の明確なエラーメッセージ
 
 #### Gitコミット情報
-- コミットハッシュ: [次のステップで作成]
+- コミットハッシュ: b8bac35
 - コミットメッセージ: feat(db): implement database schema and queries
 
 #### 次のPhaseへの引き継ぎ
