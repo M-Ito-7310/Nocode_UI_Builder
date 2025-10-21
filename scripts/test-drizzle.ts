@@ -1,9 +1,13 @@
 // Drizzle ORM接続テストスクリプト
 // CRUD操作の完全なテスト (Create, Read, Update, Delete)
 
+import { config } from 'dotenv';
 import { db } from '@/lib/db';
 import { projects } from '@/lib/db/schema';
 import { eq } from 'drizzle-orm';
+
+// .env.local を読み込み
+config({ path: '.env.local' });
 
 async function testDrizzle() {
   try {

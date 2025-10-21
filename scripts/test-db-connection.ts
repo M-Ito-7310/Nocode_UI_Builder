@@ -1,7 +1,11 @@
 // データベース接続テストスクリプト
 // Neon PostgreSQLへの基本接続、テーブル確認、構造確認を実行
 
+import { config } from 'dotenv';
 import { neon } from '@neondatabase/serverless';
+
+// .env.local を読み込み
+config({ path: '.env.local' });
 
 async function testConnection() {
   try {

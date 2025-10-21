@@ -1,6 +1,11 @@
 // 環境変数テストスクリプト
 // DATABASE_URLが正しく読み込まれているか確認
 
+import { config } from 'dotenv';
+
+// .env.local を読み込み
+config({ path: '.env.local' });
+
 if (!process.env.DATABASE_URL) {
   console.error('❌ DATABASE_URL が設定されていません');
   console.error('');

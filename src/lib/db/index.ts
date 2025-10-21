@@ -1,6 +1,12 @@
 import { neon } from '@neondatabase/serverless';
 import { drizzle } from 'drizzle-orm/neon-http';
 import * as schema from './schema';
+import { config } from 'dotenv';
+
+// .env.local を読み込み（Node.js環境のみ）
+if (typeof window === 'undefined') {
+  config({ path: '.env.local' });
+}
 
 /**
  * 環境変数の検証
