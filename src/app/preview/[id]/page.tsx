@@ -131,10 +131,10 @@ export default function PreviewPage() {
       </header>
 
       {/* プレビューコンテンツ */}
-      <main className="p-6">
-        <div className="relative min-h-[600px] bg-white border border-gray-200 rounded-lg">
+      <main className="p-6 flex justify-center">
+        <div className="relative bg-white border border-gray-200 rounded-lg" style={{ width: '1200px', height: '800px' }}>
           {previewData.widgets.length === 0 ? (
-            <div className="flex items-center justify-center h-96 text-gray-400">
+            <div className="flex items-center justify-center h-full text-gray-400">
               <div className="text-center">
                 <svg
                   className="mx-auto h-12 w-12 mb-4"

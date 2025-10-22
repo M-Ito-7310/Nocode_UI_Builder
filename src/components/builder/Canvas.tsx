@@ -50,12 +50,14 @@ export function Canvas({
       }}
       onClick={handleCanvasClick}
       className={`
-        relative w-full h-full min-h-[600px] bg-white overflow-auto
+        relative bg-white
         ${showGrid ? 'canvas-grid' : ''}
         ${isOver ? 'ring-2 ring-blue-400 ring-inset' : ''}
         transition-all duration-200
       `}
       style={{
+        width: '1200px',
+        height: '800px',
         backgroundImage: showGrid
           ? `
             linear-gradient(to right, #e5e7eb 1px, transparent 1px),

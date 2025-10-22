@@ -482,10 +482,15 @@ function generateHTML(widgets: Widget[], projectName: string): string {
       margin: 0;
       padding: 20px;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      display: flex;
+      justify-content: center;
     }
     .container {
       position: relative;
-      min-height: 600px;
+      width: 1200px;
+      height: 800px;
+      background: white;
+      border: 1px solid #e5e7eb;
     }
   </style>
 </head>
