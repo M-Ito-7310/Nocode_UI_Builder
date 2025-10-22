@@ -156,7 +156,7 @@ const Select: React.FC<WidgetComponentProps<SelectWidget>> = ({
         style={selectStyle}
         aria-label={label}
         // ビルダー内では選択を無効化（プレビューでのみ有効）
-        disabled={isSelected !== undefined}
+        disabled={onSelect !== undefined}
       >
         {placeholder && (
           <option value="" disabled>

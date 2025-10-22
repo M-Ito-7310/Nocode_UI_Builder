@@ -151,7 +151,7 @@ const Input: React.FC<WidgetComponentProps<InputWidget>> = ({
         style={inputStyle}
         aria-label={label}
         // ビルダー内では入力を無効化（プレビューでのみ有効）
-        readOnly={isSelected !== undefined}
+        readOnly={onSelect !== undefined}
       />
     </div>
   );
