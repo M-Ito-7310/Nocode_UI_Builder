@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Link from 'next/link';
 
 interface ToolbarProps {
   projectName: string;
@@ -69,8 +70,24 @@ export function Toolbar({
 
   return (
     <div className="h-16 bg-white border-b border-gray-200 px-6 flex items-center justify-between">
-      {/* 左側: プロジェクト名 */}
+      {/* 左側: ホームボタン + プロジェクト名 */}
       <div className="flex items-center gap-4">
+        {/* ホームボタン */}
+        <Link
+          href="/"
+          className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors group"
+          aria-label="ホームに戻る"
+        >
+          <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center group-hover:shadow-md transition-shadow">
+            <span className="text-white font-bold text-sm">N</span>
+          </div>
+          <span className="hidden md:inline text-sm font-medium text-gray-700 group-hover:text-gray-900">
+            ホーム
+          </span>
+        </Link>
+
+        {/* 区切り線 */}
+        <div className="h-8 w-px bg-gray-200"></div>
         {isEditingName ? (
           <div className="flex items-center gap-2">
             <input
