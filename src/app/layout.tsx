@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
-import { Footer } from '@/components/Footer';
+import { ConditionalFooter } from '@/components/ConditionalFooter';
 import './globals.css';
 
 // Google Fontsの読み込み
@@ -90,7 +90,7 @@ export default function RootLayout({
         </main>
 
         {/* フッター */}
-        <Footer />
+        <ConditionalFooter />
 
         {/* Google Analytics (オプション) */}
         {process.env.NEXT_PUBLIC_GA_ID && (
