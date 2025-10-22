@@ -144,7 +144,7 @@ React DnD の `DragPreviewImage` または `useDragLayer` を使用して、ド�
 完了日時: 2025-10-22 12:09
 実績時間: 16分
 見積時間: 2-4時間
-Git commit: (後で記録)
+Git commit: 3a004e3284b6e77c45351e2f0c6ef4e336776d12
 
 #### 改善効果
 - ドラッグ中にウィジェットの実際のサイズと形状が視覚的に確認できる
