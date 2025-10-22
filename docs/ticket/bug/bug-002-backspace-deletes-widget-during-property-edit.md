@@ -55,7 +55,7 @@ WidgetWrapperコンポーネントのキーボードイベントリスナーが�
 
 ## ✅ 修正内容
 
-- [x] 修正コミット: 後で記録
+- [x] 修正コミット: ddf93e1df1ffa8e709c179391e64c4232be79665
 - [x] 影響範囲: WidgetWrapperコンポーネントのキーボードショートカット処理のみ
 - [x] テスト実施: 手動テスト完了、TypeScriptコンパイルチェック完了
 
@@ -113,7 +113,7 @@ const handleKeyDown = (e: KeyboardEvent) => {
 ### 完了記録
 完了日時: 2025-10-22 02:20
 実績時間: 20分
-Git commit: 後で記録
+Git commit: ddf93e1df1ffa8e709c179391e64c4232be79665
 
 #### 最終確認
 - [x] バグが完全に修正されている
