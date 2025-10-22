@@ -4,7 +4,9 @@
       "Bash(npm run lint:*)",
       "Bash(git add:*)",
       "Bash(npm run build:*)",
-      "Bash(npx tsc:*)"
+      "Bash(npx tsc:*)",
+      "Read(//c/Users/mitoi/Desktop/Projects/CodeNest/**)",
+      "Read(//c/Users/mitoi/Desktop/Projects/BlueprintHub/**)"
     ],
     "deny": [],
     "ask": []

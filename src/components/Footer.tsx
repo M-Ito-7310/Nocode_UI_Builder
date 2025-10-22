@@ -65,6 +65,14 @@ export function Footer() {
                   プライバシーポリシー
                 </Link>
               </li>
+              <li>
+                <Link
+                  href="/contact"
+                  className="text-sm hover:text-white transition-colors"
+                >
+                  お問い合わせ
+                </Link>
+              </li>
             </ul>
           </div>
 
