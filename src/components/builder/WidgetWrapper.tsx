@@ -135,6 +135,17 @@ export function WidgetWrapper({
     }
 
     const handleKeyDown = (e: KeyboardEvent) => {
+      // 入力要素にフォーカスがある場合は何もしない
+      const target = e.target as HTMLElement;
+      if (
+        target.tagName === 'INPUT' ||
+        target.tagName === 'TEXTAREA' ||
+        target.tagName === 'SELECT' ||
+        target.isContentEditable
+      ) {
+        return; // 入力フィールドでの操作はスキップ
+      }
+
       if (e.key === 'Delete' || e.key === 'Backspace') {
         e.preventDefault();
         onDelete();
