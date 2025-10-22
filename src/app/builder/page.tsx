@@ -5,6 +5,7 @@ import {
   DndContext,
   DragEndEvent,
   DragStartEvent,
+  DragMoveEvent,
   DragOverlay,
   PointerSensor,
   useSensor,
@@ -36,6 +37,14 @@ export default function BuilderPage() {
   const [isSaving, setIsSaving] = useState(false);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const [isClearModalOpen, setIsClearModalOpen] = useState(false);
+  const [lastMousePosition, setLastMousePosition] = useState<{
+    x: number;
+    y: number;
+  } | null>(null);
+  const [dragStartOffset, setDragStartOffset] = useState<{
+    x: number;
+    y: number;
+  } | null>(null);
 
   // dnd-kit センサー設定
   const sensors = useSensors(
@@ -99,17 +108,49 @@ export default function BuilderPage() {
   );
 
   // ドラッグ開始
-  const handleDragStart = useCallback((event: DragStartEvent) => {
-    setActiveId(event.active.id as string);
+  const handleDragStart = useCallback(
+    (event: DragStartEvent) => {
+      setActiveId(event.active.id as string);
 
-    // ウィジェットのドラッグの場合、ウィジェット情報を保存
-    if (!event.active.id.toString().startsWith('palette-')) {
-      const widget = widgets.find((w) => w.id === event.active.id);
-      setDraggedWidget(widget || null);
-    } else {
-      setDraggedWidget(null);
+      // ウィジェットのドラッグの場合、ウィジェット情報を保存
+      if (!event.active.id.toString().startsWith('palette-')) {
+        const widget = widgets.find((w) => w.id === event.active.id);
+        setDraggedWidget(widget || null);
+      } else {
+        setDraggedWidget(null);
+
+        // パレットからのドラッグの場合、ウィジェットサイズを取得してオフセットを計算
+        const widgetType = event.active.data.current?.type as WidgetType;
+        const defaultSize = getDefaultSize(widgetType);
+
+        // ウィジェットの中心をマウス位置に合わせるためのオフセット
+        setDragStartOffset({
+          x: defaultSize.width / 2,
+          y: defaultSize.height / 2,
+        });
+      }
+
+      // マウス座標の初期化
+      if (event.activatorEvent instanceof MouseEvent) {
+        setLastMousePosition({
+          x: event.activatorEvent.clientX,
+          y: event.activatorEvent.clientY,
+        });
+      }
+    },
+    [widgets]
+  );
+
+  // ドラッグ中
+  const handleDragMove = useCallback((event: DragMoveEvent) => {
+    // マウス座標を更新（開始位置 + 移動量）
+    if (event.activatorEvent instanceof MouseEvent) {
+      setLastMousePosition({
+        x: event.activatorEvent.clientX + event.delta.x,
+        y: event.activatorEvent.clientY + event.delta.y,
+      });
     }
-  }, [widgets]);
+  }, []);
 
   // ドラッグ終了
   const handleDragEnd = useCallback(
@@ -132,15 +173,15 @@ export default function BuilderPage() {
         const canvasElement = document.querySelector('[data-canvas="true"]');
         const canvasRect = canvasElement?.getBoundingClientRect();
 
-        if (canvasRect && event.activatorEvent) {
-          const mouseEvent = event.activatorEvent as MouseEvent;
+        if (canvasRect && lastMousePosition && dragStartOffset) {
+          // ドラッグ中に保持した実際のマウス座標を使用し、オフセットを考慮
           const dropX = Math.max(
             0,
-            mouseEvent.clientX - canvasRect.left - 50
+            lastMousePosition.x - canvasRect.left - dragStartOffset.x
           );
           const dropY = Math.max(
             0,
-            mouseEvent.clientY - canvasRect.top - 20
+            lastMousePosition.y - canvasRect.top - dragStartOffset.y
           );
 
           addWidget(widgetType, { x: dropX, y: dropY });
@@ -169,8 +210,10 @@ export default function BuilderPage() {
 
       setActiveId(null);
       setDraggedWidget(null);
+      setLastMousePosition(null);
+      setDragStartOffset(null);
     },
-    [widgets]
+    [widgets, lastMousePosition, dragStartOffset]
   );
 
   // Widget追加
@@ -298,6 +341,7 @@ export default function BuilderPage() {
     <DndContext
       sensors={sensors}
       onDragStart={handleDragStart}
+      onDragMove={handleDragMove}
       onDragEnd={handleDragEnd}
     >
       <div className="flex flex-col h-screen bg-gray-50">
