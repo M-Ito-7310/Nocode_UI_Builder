@@ -1,6 +1,7 @@
 import { Metadata } from 'next'
 import ContactForm from '@/components/ContactForm'
 import ParticleBackground from '@/components/ParticleBackground'
+import { Header } from '@/components/Header'
 
 export const metadata: Metadata = {
   title: 'お問い合わせ - NoCode UI Builder',
@@ -12,14 +13,7 @@ export default function ContactPage() {
   return (
     <div className="relative min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50">
       <ParticleBackground />
-      {/* ヘッダー */}
-      <header className="relative z-10 bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <h1 className="text-2xl font-bold text-gray-900">
-            NoCode UI Builder
-          </h1>
-        </div>
-      </header>
+      <Header variant="white" />
 
       {/* メインコンテンツ */}
       <main className="relative z-10 max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">

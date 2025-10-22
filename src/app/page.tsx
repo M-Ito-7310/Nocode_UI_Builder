@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import type { Metadata } from 'next';
 import ParticleBackground from '@/components/ParticleBackground';
+import { Header } from '@/components/Header';
 
 export const metadata: Metadata = {
   title: 'ホーム',
@@ -10,26 +11,7 @@ export default function HomePage() {
   return (
     <div className="relative min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
       <ParticleBackground />
-      {/* ヘッダー */}
-      <header className="relative z-10 container mx-auto px-6 py-6">
-        <nav className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-xl">N</span>
-            </div>
-            <span className="text-xl font-bold text-gray-900">
-              NoCode UI Builder
-            </span>
-          </div>
-
-          <Link
-            href="/builder"
-            className="px-6 py-2.5 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors shadow-sm hover:shadow-md"
-          >
-            ビルダーを開く
-          </Link>
-        </nav>
-      </header>
+      <Header variant="transparent" />
 
       {/* ヒーローセクション */}
       <section className="relative z-10 container mx-auto px-6 py-20 text-center">
