@@ -274,18 +274,6 @@ export default function HomePage() {
           </Link>
         </div>
       </section>
-
-      {/* フッター */}
-      <footer className="container mx-auto px-6 py-12 border-t border-gray-200">
-        <div className="text-center text-gray-600">
-          <p className="mb-2">
-            &copy; 2025 NoCode UI Builder. All rights reserved.
-          </p>
-          <p className="text-sm">
-            Built with Next.js 14, TypeScript, Tailwind CSS
-          </p>
-        </div>
-      </footer>
     </div>
   );
 }

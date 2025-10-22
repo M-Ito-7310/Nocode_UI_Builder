@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
+import { Footer } from '@/components/Footer';
 import './globals.css';
 
 // Google Fontsの読み込み
@@ -82,11 +83,14 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ja" className={inter.variable}>
-      <body className={`${inter.className} antialiased`}>
+      <body className={`${inter.className} antialiased flex flex-col min-h-screen`}>
         {/* メインコンテンツ */}
-        <main className="min-h-screen bg-gray-50">
+        <main className="flex-1 bg-gray-50">
           {children}
         </main>
+
+        {/* フッター */}
+        <Footer />
 
         {/* Google Analytics (オプション) */}
         {process.env.NEXT_PUBLIC_GA_ID && (
