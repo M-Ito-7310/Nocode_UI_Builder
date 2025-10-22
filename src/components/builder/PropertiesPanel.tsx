@@ -577,6 +577,38 @@ function SelectWidgetProperties({
   props: any;
   updateProps: (updates: Record<string, any>) => void;
 }) {
+  const options = props.options || [
+    { value: 'option1', label: 'Option 1' },
+    { value: 'option2', label: 'Option 2' },
+    { value: 'option3', label: 'Option 3' },
+  ];
+
+  const handleOptionChange = (index: number, field: 'value' | 'label', newValue: string) => {
+    const updatedOptions = [...options];
+    updatedOptions[index] = {
+      ...updatedOptions[index],
+      [field]: newValue,
+    };
+    updateProps({ options: updatedOptions });
+  };
+
+  const handleAddOption = () => {
+    const newOptions = [
+      ...options,
+      { value: `option${options.length + 1}`, label: `Option ${options.length + 1}` },
+    ];
+    updateProps({ options: newOptions });
+  };
+
+  const handleDeleteOption = (index: number) => {
+    // 最低1つのオプションは必要
+    if (options.length <= 1) {
+      return;
+    }
+    const updatedOptions = options.filter((_: any, i: number) => i !== index);
+    updateProps({ options: updatedOptions });
+  };
+
   return (
     <>
       <PropertySection title="セレクト">
@@ -597,9 +629,52 @@ function SelectWidgetProperties({
         />
       </PropertySection>
       <PropertySection title="オプション">
-        <p className="text-xs text-gray-500">
-          オプションの編集は将来のバージョンで実装予定です
-        </p>
+        <div className="space-y-3">
+          {options.map((option: any, index: number) => (
+            <div key={index} className="border border-gray-200 rounded-lg p-3 bg-gray-50">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-xs font-medium text-gray-700">オプション {index + 1}</span>
+                {options.length > 1 && (
+                  <button
+                    onClick={() => handleDeleteOption(index)}
+                    className="text-red-500 hover:text-red-700 text-xs font-medium transition-colors"
+                    title="削除"
+                  >
+                    削除
+                  </button>
+                )}
+              </div>
+              <div className="space-y-2">
+                <div>
+                  <label className="block text-xs font-medium text-gray-600 mb-1">値 (value)</label>
+                  <input
+                    type="text"
+                    value={option.value}
+                    onChange={(e) => handleOptionChange(index, 'value', e.target.value)}
+                    className="w-full px-2 py-1.5 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="option1"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-gray-600 mb-1">表示名 (label)</label>
+                  <input
+                    type="text"
+                    value={option.label}
+                    onChange={(e) => handleOptionChange(index, 'label', e.target.value)}
+                    className="w-full px-2 py-1.5 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="Option 1"
+                  />
+                </div>
+              </div>
+            </div>
+          ))}
+          <button
+            onClick={handleAddOption}
+            className="w-full py-2 px-4 bg-blue-50 hover:bg-blue-100 text-blue-600 font-medium text-sm rounded-lg transition-colors border border-blue-200"
+          >
+            + オプションを追加
+          </button>
+        </div>
       </PropertySection>
     </>
   );
