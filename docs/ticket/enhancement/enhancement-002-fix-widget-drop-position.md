@@ -155,7 +155,7 @@ const dropY = Math.max(0, lastMousePosition.y - canvasRect.top - dragStartOffset
 完了日時: 2025-10-22 13:00
 実績時間: 30分
 見積時間: 2-4時間
-Git commit: (後で記録)
+Git commit: 20e0b59ec36962c06045b6bb3f88f485f3f07288
 
 #### 改善効果
 - ドロップ位置とアウトライン表示位置が完全に一致
