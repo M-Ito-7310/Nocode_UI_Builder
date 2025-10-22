@@ -154,7 +154,7 @@ interface FooterProps {
 完了日時: 2025-10-22 18:00
 実績時間: 30分
 見積時間: 4-6時間
-Git commit: [後で記録]
+Git commit: 5541b8c7f36e23dd6eac1be27f5138ced468b740
 
 #### 最終確認
 - [x] すべての機能が実装されている
