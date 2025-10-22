@@ -197,7 +197,25 @@ git log -1 --format='%H'
 Git commit: [コミットハッシュ]
 ```
 
-### ステップ9: 完了レポートの表示
+**必ず実際にファイルを編集してチケットファイルを更新してください。**
+
+### ステップ9: チケット更新を再コミット
+
+チケットファイルにコミット情報を追記した変更を再度コミット：
+
+```bash
+git add docs/ticket/bug/bug-{{ticket_number_padded}}-*.md
+git commit -m "$(cat <<'EOF'
+docs(ticket): bug-{{ticket_number_padded}}チケットにコミット情報を記録
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+EOF
+)"
+```
+
+### ステップ10: 完了レポートの表示
 
 以下の形式でバグチケット完了を報告：
 
@@ -261,3 +279,5 @@ Bug #{{ticket_number_padded}} の修正が完了しました！
 ## 🚀 実行開始
 
 上記の手順に従って、Bug #{{ticket_number}} の完了処理を開始してください。
+
+**重要**: ステップ9のチケット更新の再コミットを必ず実行してください。
