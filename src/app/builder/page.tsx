@@ -14,6 +14,7 @@ import { Canvas } from '@/components/builder/Canvas';
 import { WidgetPalette } from '@/components/builder/WidgetPalette';
 import { PropertiesPanel } from '@/components/builder/PropertiesPanel';
 import { Toolbar } from '@/components/builder/Toolbar';
+import { WidgetDragPreview } from '@/components/builder/WidgetDragPreview';
 import { Modal } from '@/components/ui/Modal';
 import type { Widget, WidgetType } from '@/types/widget';
 import {
@@ -30,6 +31,7 @@ export default function BuilderPage() {
   const [widgets, setWidgets] = useState<Widget[]>([]);
   const [selectedWidgetId, setSelectedWidgetId] = useState<string | null>(null);
   const [activeId, setActiveId] = useState<string | null>(null);
+  const [draggedWidget, setDraggedWidget] = useState<Widget | null>(null);
   const [projectName, setProjectName] = useState('Untitled Project');
   const [isSaving, setIsSaving] = useState(false);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
@@ -99,7 +101,15 @@ export default function BuilderPage() {
   // ドラッグ開始
   const handleDragStart = useCallback((event: DragStartEvent) => {
     setActiveId(event.active.id as string);
-  }, []);
+
+    // ウィジェットのドラッグの場合、ウィジェット情報を保存
+    if (!event.active.id.toString().startsWith('palette-')) {
+      const widget = widgets.find((w) => w.id === event.active.id);
+      setDraggedWidget(widget || null);
+    } else {
+      setDraggedWidget(null);
+    }
+  }, [widgets]);
 
   // ドラッグ終了
   const handleDragEnd = useCallback(
@@ -158,6 +168,7 @@ export default function BuilderPage() {
       }
 
       setActiveId(null);
+      setDraggedWidget(null);
     },
     [widgets]
   );
@@ -339,13 +350,14 @@ export default function BuilderPage() {
       {/* ドラッグオーバーレイ */}
       <DragOverlay>
         {activeId ? (
-          <div className="bg-blue-100 border-2 border-blue-400 rounded-lg px-4 py-3 shadow-lg">
-            <span className="text-blue-700 font-medium">
-              {activeId.toString().startsWith('palette-')
-                ? `${activeId.toString().replace('palette-', '')} Widget`
-                : 'Widget移動中...'}
-            </span>
-          </div>
+          <WidgetDragPreview
+            widget={draggedWidget || undefined}
+            widgetType={
+              activeId.toString().startsWith('palette-')
+                ? (activeId.toString().replace('palette-', '') as WidgetType)
+                : undefined
+            }
+          />
         ) : null}
       </DragOverlay>
 
