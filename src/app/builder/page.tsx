@@ -14,6 +14,7 @@ import { Canvas } from '@/components/builder/Canvas';
 import { WidgetPalette } from '@/components/builder/WidgetPalette';
 import { PropertiesPanel } from '@/components/builder/PropertiesPanel';
 import { Toolbar } from '@/components/builder/Toolbar';
+import { Modal } from '@/components/ui/Modal';
 import type { Widget, WidgetType } from '@/types/widget';
 import {
   getDefaultSize,
@@ -32,6 +33,7 @@ export default function BuilderPage() {
   const [projectName, setProjectName] = useState('Untitled Project');
   const [isSaving, setIsSaving] = useState(false);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
+  const [isClearModalOpen, setIsClearModalOpen] = useState(false);
 
   // dnd-kit センサー設定
   const sensors = useSensors(
@@ -182,7 +184,9 @@ export default function BuilderPage() {
     (id: string, updates: Partial<Widget>) => {
       setWidgets((prev) =>
         prev.map((w) => {
-          if (w.id !== id) return w;
+          if (w.id !== id) {
+            return w;
+          }
 
           const updatedWidget = { ...w, ...updates } as Widget;
 
@@ -267,6 +271,18 @@ export default function BuilderPage() {
     URL.revokeObjectURL(url);
   }, [widgets, projectName]);
 
+  // すべてクリア処理
+  const handleClearAll = useCallback(() => {
+    setIsClearModalOpen(true);
+  }, []);
+
+  // すべてクリア確定処理
+  const handleConfirmClearAll = useCallback(() => {
+    setWidgets([]);
+    setSelectedWidgetId(null);
+    setIsClearModalOpen(false);
+  }, []);
+
   return (
     <DndContext
       sensors={sensors}
@@ -281,8 +297,10 @@ export default function BuilderPage() {
           onSave={handleSave}
           onPreview={handlePreview}
           onExport={handleExport}
+          onClearAll={handleClearAll}
           isSaving={isSaving}
           lastSaved={lastSaved}
+          widgetCount={widgets.length}
         />
 
         {/* メインエリア */}
@@ -330,6 +348,37 @@ export default function BuilderPage() {
           </div>
         ) : null}
       </DragOverlay>
+
+      {/* すべてクリア確認モーダル */}
+      <Modal
+        isOpen={isClearModalOpen}
+        onClose={() => setIsClearModalOpen(false)}
+        title="すべてのウィジェットを削除"
+        size="sm"
+        footer={
+          <>
+            <button
+              onClick={() => setIsClearModalOpen(false)}
+              className="px-4 py-2 bg-gray-100 text-gray-700 rounded-md text-sm font-medium hover:bg-gray-200 transition-colors"
+            >
+              キャンセル
+            </button>
+            <button
+              onClick={handleConfirmClearAll}
+              className="px-4 py-2 bg-red-600 text-white rounded-md text-sm font-medium hover:bg-red-700 transition-colors"
+            >
+              削除
+            </button>
+          </>
+        }
+      >
+        <p className="text-gray-700">
+          キャンバス上のすべてのウィジェット（{widgets.length}個）を削除しますか？
+        </p>
+        <p className="text-sm text-gray-500 mt-2">
+          この操作は元に戻せません。
+        </p>
+      </Modal>
     </DndContext>
   );
 }
