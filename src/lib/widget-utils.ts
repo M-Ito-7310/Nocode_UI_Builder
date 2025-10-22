@@ -13,6 +13,20 @@ export function generateId(): string {
   return `widget-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 }
 
+// 最小サイズ取得
+export function getMinSize(type: WidgetType): { width: number; height: number } {
+  const minSizes: Record<WidgetType, { width: number; height: number }> = {
+    Text: { width: 50, height: 25 },
+    Input: { width: 120, height: 60 },
+    Button: { width: 80, height: 40 },
+    Image: { width: 50, height: 50 },
+    Table: { width: 200, height: 120 },
+    Select: { width: 120, height: 60 },
+  };
+
+  return minSizes[type];
+}
+
 // デフォルトサイズ取得
 export function getDefaultSize(type: WidgetType): { width: number; height: number } {
   const sizes: Record<WidgetType, { width: number; height: number }> = {

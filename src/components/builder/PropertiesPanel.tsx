@@ -2,6 +2,7 @@
 
 import React from 'react';
 import type { Widget } from '@/types/widget';
+import { getMinSize } from '@/lib/widget-utils';
 
 interface PropertiesPanelProps {
   selectedWidget: Widget | null;
@@ -38,6 +39,9 @@ export function PropertiesPanel({
     });
   };
 
+  // ウィジェットタイプに基づいた最小サイズを取得
+  const minSize = getMinSize(selectedWidget.type);
+
   return (
     <div className={`flex flex-col h-full bg-white border-l border-gray-200 ${className}`}>
       {/* ヘッダー */}
@@ -68,14 +72,20 @@ export function PropertiesPanel({
             <NumberInput
               label="幅"
               value={selectedWidget.size.width}
-              onChange={(width) => onUpdateWidget({ size: { ...selectedWidget.size, width } })}
-              min={50}
+              onChange={(width) => {
+                const validWidth = Math.max(minSize.width, width);
+                onUpdateWidget({ size: { ...selectedWidget.size, width: validWidth } });
+              }}
+              min={minSize.width}
             />
             <NumberInput
               label="高さ"
               value={selectedWidget.size.height}
-              onChange={(height) => onUpdateWidget({ size: { ...selectedWidget.size, height } })}
-              min={30}
+              onChange={(height) => {
+                const validHeight = Math.max(minSize.height, height);
+                onUpdateWidget({ size: { ...selectedWidget.size, height: validHeight } });
+              }}
+              min={minSize.height}
             />
           </div>
         </PropertySection>

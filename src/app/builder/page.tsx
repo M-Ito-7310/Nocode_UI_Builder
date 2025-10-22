@@ -19,6 +19,7 @@ import {
   getDefaultSize,
   getDefaultProps,
   generateId,
+  getMinSize,
 } from '@/lib/widget-utils';
 
 const STORAGE_KEY = 'nocode-builder-project';
@@ -180,7 +181,22 @@ export default function BuilderPage() {
   const updateWidget = useCallback(
     (id: string, updates: Partial<Widget>) => {
       setWidgets((prev) =>
-        prev.map((w) => (w.id === id ? { ...w, ...updates } as Widget : w))
+        prev.map((w) => {
+          if (w.id !== id) return w;
+
+          const updatedWidget = { ...w, ...updates } as Widget;
+
+          // サイズ更新時のバリデーション
+          if (updates.size) {
+            const minSize = getMinSize(w.type);
+            updatedWidget.size = {
+              width: Math.max(minSize.width, updates.size.width ?? w.size.width),
+              height: Math.max(minSize.height, updates.size.height ?? w.size.height),
+            };
+          }
+
+          return updatedWidget;
+        })
       );
     },
     []
