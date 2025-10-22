@@ -1,9 +1,9 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { useDraggable } from '@dnd-kit/core';
 import type { Widget } from '@/types/widget';
 import { renderWidget } from '@/lib/widget-renderer';
+import { DragHandle } from './DragHandle';
 
 interface WidgetWrapperProps {
   widget: Widget;
@@ -27,13 +27,6 @@ export function WidgetWrapper({
   const wrapperRef = useRef<HTMLDivElement>(null);
   const startPosRef = useRef({ x: 0, y: 0 });
   const startSizeRef = useRef({ width: 0, height: 0 });
-
-  // ドラッグ可能に設定
-  const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
-    id: widget.id,
-    data: { widget },
-    disabled: isResizing,
-  });
 
   // リサイズ開始
   const handleResizeStart = (e: React.MouseEvent, handle: ResizeHandle) => {
@@ -154,20 +147,14 @@ export function WidgetWrapper({
 
   return (
     <div
-      ref={(node) => {
-        setNodeRef(node);
-        if (node) {
-          (wrapperRef as React.MutableRefObject<HTMLDivElement>).current = node;
-        }
-      }}
+      ref={wrapperRef}
       onClick={(e) => {
         e.stopPropagation();
         onSelect();
       }}
       className={`
-        absolute cursor-move group
+        absolute group
         ${isSelected ? 'z-10' : 'z-0'}
-        ${isDragging ? 'opacity-50' : 'opacity-100'}
       `}
       style={{
         left: widget.position.x,
@@ -175,16 +162,19 @@ export function WidgetWrapper({
         width: widget.size.width,
         height: widget.size.height,
       }}
-      {...attributes}
-      {...listeners}
     >
       {/* 選択枠 */}
       {isSelected && (
         <div className="absolute inset-0 border-2 border-blue-500 pointer-events-none rounded" />
       )}
 
+      {/* ドラッグハンドル */}
+      {isSelected && (
+        <DragHandle widgetId={widget.id} widget={widget} />
+      )}
+
       {/* Widget本体 */}
-      <div className="w-full h-full">
+      <div className="w-full h-full pointer-events-none">
         {renderWidget(widget)}
       </div>
 

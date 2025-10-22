@@ -8,7 +8,7 @@ import type { Widget } from '@/types/widget';
 interface CanvasProps {
   widgets: Widget[];
   selectedWidgetId: string | null;
-  onSelectWidget: (id: string) => void;
+  onSelectWidget: (id: string | null) => void;
   onUpdateWidget: (id: string, updates: Partial<Widget>) => void;
   onDeleteWidget: (id: string) => void;
   showGrid?: boolean;
@@ -33,7 +33,7 @@ export function Canvas({
   const handleCanvasClick = (e: React.MouseEvent) => {
     // キャンバス自体をクリックした場合のみ選択解除
     if (e.target === canvasRef.current) {
-      onSelectWidget('');
+      onSelectWidget(null);
     }
   };
 
