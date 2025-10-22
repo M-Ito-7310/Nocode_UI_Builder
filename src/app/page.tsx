@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import type { Metadata } from 'next';
+import ParticleBackground from '@/components/ParticleBackground';
 
 export const metadata: Metadata = {
   title: 'ホーム',
@@ -7,9 +8,10 @@ export const metadata: Metadata = {
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+    <div className="relative min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+      <ParticleBackground />
       {/* ヘッダー */}
-      <header className="container mx-auto px-6 py-6">
+      <header className="relative z-10 container mx-auto px-6 py-6">
         <nav className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
@@ -30,7 +32,7 @@ export default function HomePage() {
       </header>
 
       {/* ヒーローセクション */}
-      <section className="container mx-auto px-6 py-20 text-center">
+      <section className="relative z-10 container mx-auto px-6 py-20 text-center">
         <div className="max-w-4xl mx-auto">
           {/* バッジ */}
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-100 text-blue-700 rounded-full text-sm font-medium mb-8">
@@ -82,7 +84,7 @@ export default function HomePage() {
       </section>
 
       {/* 主要機能セクション */}
-      <section id="features" className="container mx-auto px-6 py-20">
+      <section id="features" className="relative z-10 container mx-auto px-6 py-20">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold text-gray-900 mb-4">
             主要機能
@@ -258,7 +260,7 @@ export default function HomePage() {
       </section>
 
       {/* CTAセクション */}
-      <section className="container mx-auto px-6 py-20">
+      <section className="relative z-10 container mx-auto px-6 py-20">
         <div className="max-w-4xl mx-auto bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-12 text-center shadow-xl">
           <h2 className="text-4xl font-bold text-white mb-6">
             今すぐ始めましょう

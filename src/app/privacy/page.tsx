@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import type { Metadata } from 'next';
+import ParticleBackground from '@/components/ParticleBackground';
 
 export const metadata: Metadata = {
   title: 'プライバシーポリシー',
@@ -8,9 +9,10 @@ export const metadata: Metadata = {
 
 export default function PrivacyPage() {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="relative min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+      <ParticleBackground />
       {/* ヘッダー */}
-      <header className="bg-white border-b border-gray-200">
+      <header className="relative z-10 bg-white border-b border-gray-200">
         <div className="container mx-auto px-6 py-4">
           <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
             <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
@@ -24,7 +26,7 @@ export default function PrivacyPage() {
       </header>
 
       {/* メインコンテンツ */}
-      <main className="container mx-auto px-6 py-12 max-w-4xl">
+      <main className="relative z-10 container mx-auto px-6 py-12 max-w-4xl">
         <h1 className="text-4xl font-bold text-gray-900 mb-4">プライバシーポリシー</h1>
         <p className="text-gray-600 mb-8">最終更新日: 2025年10月22日</p>
 
