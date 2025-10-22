@@ -24,6 +24,8 @@ import {
   generateId,
   getMinSize,
 } from '@/lib/widget-utils';
+import { generateHTML as generateHTMLExport } from '@/lib/export/html-generator';
+import type { CanvasData } from '@/types/export';
 
 const STORAGE_KEY = 'nocode-builder-project';
 
@@ -310,8 +312,22 @@ export default function BuilderPage() {
 
   // エクスポート処理
   const handleExport = useCallback(() => {
-    // HTML/CSS生成
-    const html = generateHTML(widgets, projectName);
+    // CanvasData形式に変換
+    const canvasData: CanvasData = {
+      components: widgets,
+      settings: {
+        backgroundColor: '#FFFFFF',
+        width: 1200,
+        height: 800,
+        title: projectName,
+      },
+    };
+
+    // HTML/CSS生成（正式なエクスポート関数を使用）
+    const html = generateHTMLExport(projectName, canvasData, {
+      includeComments: true,
+      prettify: true,
+    });
 
     // ダウンロード
     const blob = new Blob([html], { type: 'text/html' });
@@ -437,67 +453,4 @@ export default function BuilderPage() {
       </Modal>
     </DndContext>
   );
-}
-
-// HTML生成関数
-function generateHTML(widgets: Widget[], projectName: string): string {
-  const widgetsHTML = widgets
-    .map((widget) => {
-      const style = `
-        position: absolute;
-        left: ${widget.position.x}px;
-        top: ${widget.position.y}px;
-        width: ${widget.size.width}px;
-        height: ${widget.size.height}px;
-      `.trim();
-
-      // Widget種類ごとのHTML生成
-      switch (widget.type) {
-        case 'Text':
-          return `<div style="${style} font-size: ${widget.props.fontSize}px; color: ${widget.props.color}; font-weight: ${widget.props.fontWeight}; text-align: ${widget.props.textAlign};">${widget.props.content}</div>`;
-
-        case 'Button':
-          return `<button style="${style} background: ${widget.props.color}; color: ${widget.props.textColor}; border-radius: ${widget.props.borderRadius}px; border: none; cursor: pointer; font-size: 16px;">${widget.props.text}</button>`;
-
-        case 'Input':
-          return `<div style="${style}"><label style="display: block; margin-bottom: 4px;">${widget.props.label}</label><input type="${widget.props.inputType}" placeholder="${widget.props.placeholder}" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;" ${widget.props.required ? 'required' : ''} /></div>`;
-
-        case 'Image':
-          return `<img src="${widget.props.src}" alt="${widget.props.alt}" style="${style} object-fit: ${widget.props.objectFit}; border-radius: ${widget.props.borderRadius}px; opacity: ${widget.props.opacity};" />`;
-
-        default:
-          return `<div style="${style}"></div>`;
-      }
-    })
-    .join('\n    ');
-
-  return `<!DOCTYPE html>
-<html lang="ja">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${projectName}</title>
-  <style>
-    body {
-      margin: 0;
-      padding: 20px;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      display: flex;
-      justify-content: center;
-    }
-    .container {
-      position: relative;
-      width: 1200px;
-      height: 800px;
-      background: white;
-      border: 1px solid #e5e7eb;
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    ${widgetsHTML}
-  </div>
-</body>
-</html>`;
 }
